@@ -1,0 +1,104 @@
+{
+  "name": "xilie",
+  "displayName": "Xilie",
+  "description": "A developer's extension that lets you control your Spotify hearing experience from your IDE.",
+  "publisher": "d3fault",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.102.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "xilie-explorer",
+          "title": "Xilie Spotify",
+          "icon": "icons/xilie-icon.png"
+        }
+      ]
+    },
+    "views": {
+      "xilie-explorer": [
+        {
+          "id": "xiliePlaylists",
+          "name": "My Playlists",
+          "icon": "$(list-unordered)"
+        },
+        {
+          "id": "xilieAlbums",
+          "name": "My Albums",
+          "icon": "$(list-unordered)"
+        }
+      ]
+    },
+    
+    "authentication": [
+      {
+        "id": "spotify",
+        "label": "Spotify"
+      }
+    ],
+    "commands": [
+      {
+        "command": "xilie.authenticate",
+        "title": "Xilie: Authenticate with Spotify"
+      },
+      {
+        "command": "xilie.playPause",
+        "title": "Xilie: Play/Pause"
+      },
+      {
+        "command": "xilie.nextTrack",
+        "title": "Xilie: Next Track"
+      },
+      {
+        "command": "xilie.previousTrack",
+        "title": "Xilie: Previous Track"
+      }
+    ]
+  },
+  "protocols": [
+    {
+      "scheme": "xilie",
+      "handler": "xilie"
+    }
+  ],
+  "scripts": {
+    "vscode:prepublish": "npm run package",
+    "compile": "npm run check-types && npm run lint && node esbuild.js",
+    "watch": "npm-run-all -p watch:*",
+    "watch:esbuild": "node esbuild.js --watch",
+    "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
+    "package": "npm run check-types && npm run lint && node esbuild.js --production",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "npm run compile-tests && npm run compile && npm run lint",
+    "check-types": "tsc --noEmit",
+    "lint": "eslint src",
+    "test": "vscode-test",
+    "format": "npx @biomejs/biome format --write ./src"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.1.3",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "20.x",
+    "@types/vscode": "^1.102.0",
+    "@typescript-eslint/eslint-plugin": "^8.31.1",
+    "@typescript-eslint/parser": "^8.31.1",
+    "@vscode/test-cli": "^0.0.11",
+    "@vscode/test-electron": "^2.5.2",
+    "esbuild": "^0.25.3",
+    "npm-run-all": "^4.1.5",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.1"
+  }
+}
