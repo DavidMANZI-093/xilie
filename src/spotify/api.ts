@@ -2,7 +2,16 @@ import * as vscode from "vscode";
 import { SpotifyAuth } from "./auth";
 import { logger } from "../utils/logger";
 import { formatJSON } from "../utils/formatter";
-import { SpotifyError, SpotifyPlaybackState, SpotifyPagingObject, SpotifyPlaylist, SpotifyDevice, SpotifyArtist, SpotifyTrack, SpotifyUser } from "../types/spotify";
+import {
+	SpotifyError,
+	SpotifyPlaybackState,
+	SpotifyPagingObject,
+	SpotifyPlaylist,
+	SpotifyDevice,
+	SpotifyArtist,
+	SpotifyTrack,
+	SpotifyUser,
+} from "../types/spotify";
 
 /**
  * Manages all interactions with the Spotify Web API.
@@ -66,22 +75,30 @@ export class SpotifyApi {
 				if (!response.ok) {
 					// Handle specific error cases
 					if (response.status === 404) {
-						throw new Error("Spotify resource not found. The requested item may have been removed or is not available.");
+						throw new Error(
+							"Spotify resource not found. The requested item may have been removed or is not available.",
+						);
 					}
-					
+
 					if (response.status === 403) {
-						throw new Error("Access forbidden. You may not have the required Spotify Premium subscription or permissions.");
+						throw new Error(
+							"Access forbidden. You may not have the required Spotify Premium subscription or permissions.",
+						);
 					}
-					
+
 					if (response.status === 429) {
-						const retryAfter = response.headers.get('Retry-After');
-						const delay = retryAfter ? parseInt(retryAfter) * 1000 : baseDelay * Math.pow(2, i);
+						const retryAfter = response.headers.get("Retry-After");
+						const delay = retryAfter
+							? parseInt(retryAfter) * 1000
+							: baseDelay * Math.pow(2, i);
 						if (i < retries) {
 							logger.warn(`Rate limited. Retrying in ${delay}ms...`);
 							await new Promise((resolve) => setTimeout(resolve, delay));
 							continue;
 						}
-						throw new Error("Spotify API rate limit exceeded. Please try again later.");
+						throw new Error(
+							"Spotify API rate limit exceeded. Please try again later.",
+						);
 					}
 
 					// Check if this is a retryable error (e.g., 5xx)
@@ -128,7 +145,9 @@ export class SpotifyApi {
 						);
 						await new Promise((resolve) => setTimeout(resolve, delay));
 					} else {
-						logger.error(`All retries failed. Error: ${error.message || error}`);
+						logger.error(
+							`All retries failed. Error: ${error.message || error}`,
+						);
 					}
 				}
 			}

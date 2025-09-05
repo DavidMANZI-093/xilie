@@ -1,5 +1,11 @@
 import * as vscode from "vscode";
-import { SpotifyPlaylist as SpotifyPlaylistAPI, SpotifyArtist as SpotifyArtistAPI, SpotifyTrack as SpotifyTrackAPI, SpotifyAlbum as SpotifyAlbumAPI, SpotifyDevice as SpotifyDeviceAPI } from "./types/spotify";
+import {
+	SpotifyPlaylist as SpotifyPlaylistAPI,
+	SpotifyArtist as SpotifyArtistAPI,
+	SpotifyTrack as SpotifyTrackAPI,
+	SpotifyAlbum as SpotifyAlbumAPI,
+	SpotifyDevice as SpotifyDeviceAPI,
+} from "./types/spotify";
 
 /**
  * Common interface for Spotify items that can be displayed in the tree view.

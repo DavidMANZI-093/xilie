@@ -13,7 +13,7 @@ let statusBar: SpotifyStatusBar;
 let sidebarViews: { [key: string]: SpotifySidebarProvider };
 
 export function activate(context: vscode.ExtensionContext) {
-	logger.info('Xilie is now active!');
+	logger.info("Xilie is now active!");
 
 	spotifyAuth = new SpotifyAuth(
 		context.secrets,
@@ -22,51 +22,56 @@ export function activate(context: vscode.ExtensionContext) {
 	spotifyApi = new SpotifyApi(spotifyAuth);
 
 	statusBar = new SpotifyStatusBar(spotifyApi);
-	
+
 	// Check if status bar should be shown based on settings
-	const initialConfig = vscode.workspace.getConfiguration('xilie');
-	const showStatusBar = initialConfig.get<boolean>('showStatusBarItem', true);
+	const initialConfig = vscode.workspace.getConfiguration("xilie");
+	const showStatusBar = initialConfig.get<boolean>("showStatusBarItem", true);
 	if (!showStatusBar) {
 		statusBar.hide();
 	}
-	
+
 	sidebarViews = {
-		"playlists": new SpotifySidebarProvider(spotifyApi, "xiliePlaylists"),
-		"artists": new SpotifySidebarProvider(spotifyApi, "xilieArtists"),
-		"devices": new SpotifySidebarProvider(spotifyApi, "xilieDevices"),
+		playlists: new SpotifySidebarProvider(spotifyApi, "xiliePlaylists"),
+		artists: new SpotifySidebarProvider(spotifyApi, "xilieArtists"),
+		devices: new SpotifySidebarProvider(spotifyApi, "xilieDevices"),
 	};
 
 	// Commands registry
-	context.subscriptions.push( // Authentication command
+	context.subscriptions.push(
+		// Authentication command
 		vscode.commands.registerCommand("xilie.authenticate", async () => {
 			try {
 				await spotifyAuth.authenticate();
-				
+
 				const authTimeout = setTimeout(async () => {
-					if (!await spotifyAuth.isAuthenticated()) {
+					if (!(await spotifyAuth.isAuthenticated())) {
 						await spotifyAuth.cancelAuthentication();
 						updateUIStatus();
 					}
 				}, 60 * 1000);
-				
+
 				clearTimeout(authTimeout);
 				updateUIStatus();
 			} catch (error: any) {
 				if (error.message.includes("access_denied")) {
-					vscode.window.showErrorMessage("Spotify authentication was cancelled.", "Close").then((choice) => {
-						if (choice === "Close") {
-							spotifyAuth.cancelAuthentication();
-						}
-					});
+					vscode.window
+						.showErrorMessage("Spotify authentication was cancelled.", "Close")
+						.then((choice) => {
+							if (choice === "Close") {
+								spotifyAuth.cancelAuthentication();
+							}
+						});
 				} else {
-					vscode.window.showErrorMessage(
-						`Spotify authentication failed: ${error.message || error}`,
-						"Close",
-					).then((choice) => {
-						if (choice === "Close") {
-							spotifyAuth.cancelAuthentication();
-						}
-					});
+					vscode.window
+						.showErrorMessage(
+							`Spotify authentication failed: ${error.message || error}`,
+							"Close",
+						)
+						.then((choice) => {
+							if (choice === "Close") {
+								spotifyAuth.cancelAuthentication();
+							}
+						});
 				}
 				logger.error(`Authentication error: ${error}`);
 				updateUIStatus();
@@ -74,10 +79,13 @@ export function activate(context: vscode.ExtensionContext) {
 		}),
 	);
 
-	context.subscriptions.push( // Show Xilie sidebar view
+	context.subscriptions.push(
+		// Show Xilie sidebar view
 		vscode.commands.registerCommand("xilie.showXilie", async () => {
 			try {
-				vscode.commands.executeCommand("workbench.view.extension.xilie-explorer");
+				vscode.commands.executeCommand(
+					"workbench.view.extension.xilie-explorer",
+				);
 			} catch (error) {
 				logger.error(`Error showing Xilie view: ${error}`);
 				vscode.window.showErrorMessage(
@@ -85,10 +93,11 @@ export function activate(context: vscode.ExtensionContext) {
 					"Close",
 				);
 			}
-		})
+		}),
 	);
 
-	context.subscriptions.push( // Sign out command
+	context.subscriptions.push(
+		// Sign out command
 		vscode.commands.registerCommand("xilie.signOut", async () => {
 			try {
 				await spotifyAuth.clearTokens();
@@ -102,7 +111,8 @@ export function activate(context: vscode.ExtensionContext) {
 		}),
 	);
 
-	context.subscriptions.push( // Play/pause command
+	context.subscriptions.push(
+		// Play/pause command
 		vscode.commands.registerCommand("xilie.playPause", async () => {
 			try {
 				const playbackState = await spotifyApi.getPlaybackState();
@@ -123,23 +133,31 @@ export function activate(context: vscode.ExtensionContext) {
 				updatePlaybackStatusBar();
 			} catch (error: any) {
 				if (error.message.includes("No active device")) {
-					vscode.window.showErrorMessage(
-						"No active Spotify device found. Please open Spotify on one of your devices and try again.",
-						"Open Spotify Web Player"
-					).then((selection) => {
-						if (selection === "Open Spotify Web Player") {
-							vscode.env.openExternal(vscode.Uri.parse("https://open.spotify.com"));
-						}
-					});
+					vscode.window
+						.showErrorMessage(
+							"No active Spotify device found. Please open Spotify on one of your devices and try again.",
+							"Open Spotify Web Player",
+						)
+						.then((selection) => {
+							if (selection === "Open Spotify Web Player") {
+								vscode.env.openExternal(
+									vscode.Uri.parse("https://open.spotify.com"),
+								);
+							}
+						});
 				} else if (error.message.includes("Premium")) {
-					vscode.window.showErrorMessage(
-						"Spotify Premium is required for playback control. Please upgrade your account.",
-						"Learn More"
-					).then((selection) => {
-						if (selection === "Learn More") {
-							vscode.env.openExternal(vscode.Uri.parse("https://www.spotify.com/premium/"));
-						}
-					});
+					vscode.window
+						.showErrorMessage(
+							"Spotify Premium is required for playback control. Please upgrade your account.",
+							"Learn More",
+						)
+						.then((selection) => {
+							if (selection === "Learn More") {
+								vscode.env.openExternal(
+									vscode.Uri.parse("https://www.spotify.com/premium/"),
+								);
+							}
+						});
 				} else {
 					vscode.window.showErrorMessage(
 						`Failed to control playback: ${error.message || error}`,
@@ -303,19 +321,19 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(
 		vscode.commands.registerCommand("xilie.refreshPlaylists", () => {
 			sidebarViews["playlists"].refresh();
-		})
+		}),
 	);
 
 	context.subscriptions.push(
 		vscode.commands.registerCommand("xilie.refreshArtists", () => {
 			sidebarViews["artists"].refresh();
-		})
+		}),
 	);
 
 	context.subscriptions.push(
 		vscode.commands.registerCommand("xilie.refreshDevices", () => {
 			sidebarViews["devices"].refresh();
-		})
+		}),
 	);
 
 	// --- Register UI Components ---
@@ -333,39 +351,48 @@ export function activate(context: vscode.ExtensionContext) {
 	);
 
 	context.subscriptions.push(statusBar.statusBarItem);
-	
+
 	// --- Initial UI Update and Periodic Refresh ---
 	updateUIStatus();
-	
+
 	// Get refresh interval from settings
-	const extensionConfig = vscode.workspace.getConfiguration('xilie');
-	const refreshInterval = extensionConfig.get<number>('refreshInterval', 5000);
-	
+	const extensionConfig = vscode.workspace.getConfiguration("xilie");
+	const refreshInterval = extensionConfig.get<number>("refreshInterval", 5000);
+
 	setInterval(updateUIStatus, 60 * 1000); // Refresh every minute
 	let playbackInterval = setInterval(updatePlaybackStatusBar, refreshInterval); // Update playback status based on settings
 
 	// Listen for configuration changes
 	context.subscriptions.push(
 		vscode.workspace.onDidChangeConfiguration((e) => {
-			if (e.affectsConfiguration('xilie')) {
-				const updatedConfig = vscode.workspace.getConfiguration('xilie');
-				
+			if (e.affectsConfiguration("xilie")) {
+				const updatedConfig = vscode.workspace.getConfiguration("xilie");
+
 				// Update status bar visibility
-				const showStatusBar = updatedConfig.get<boolean>('showStatusBarItem', true);
+				const showStatusBar = updatedConfig.get<boolean>(
+					"showStatusBarItem",
+					true,
+				);
 				if (showStatusBar) {
 					statusBar.show();
 				} else {
 					statusBar.hide();
 				}
-				
+
 				// Update refresh interval
-				const newRefreshInterval = updatedConfig.get<number>('refreshInterval', 5000);
+				const newRefreshInterval = updatedConfig.get<number>(
+					"refreshInterval",
+					5000,
+				);
 				if (newRefreshInterval !== refreshInterval) {
 					clearInterval(playbackInterval);
-					playbackInterval = setInterval(updatePlaybackStatusBar, newRefreshInterval);
+					playbackInterval = setInterval(
+						updatePlaybackStatusBar,
+						newRefreshInterval,
+					);
 				}
 			}
-		})
+		}),
 	);
 
 	// The command has been defined in the package.json file
@@ -379,7 +406,6 @@ export function deactivate() {
 }
 
 async function updateUIStatus() {
-	
 	Object.values(sidebarViews).forEach((provider) => provider.refresh());
 }
 

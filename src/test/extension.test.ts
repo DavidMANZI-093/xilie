@@ -11,28 +11,31 @@ suite("Xilie Extension Test Suite", () => {
 	test("Extension should activate", async () => {
 		const extension = vscode.extensions.getExtension("d3fault.xilie");
 		assert.ok(extension);
-		
+
 		if (!extension.isActive) {
 			await extension.activate();
 		}
-		
+
 		assert.ok(extension.isActive);
 	});
 
 	test("Commands should be registered", async () => {
 		const commands = await vscode.commands.getCommands(true);
-		
+
 		const expectedCommands = [
 			"xilie.authenticate",
 			"xilie.signOut",
 			"xilie.showXilie",
 			"xilie.playPause",
 			"xilie.nextTrack",
-			"xilie.previousTrack"
+			"xilie.previousTrack",
 		];
-		
+
 		for (const command of expectedCommands) {
-			assert.ok(commands.includes(command), `Command ${command} should be registered`);
+			assert.ok(
+				commands.includes(command),
+				`Command ${command} should be registered`,
+			);
 		}
 	});
 
