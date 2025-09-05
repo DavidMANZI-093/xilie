@@ -4,7 +4,7 @@
 
 A powerful VS Code extension that brings seamless Spotify control right into your development environment. Control your music without ever leaving your code editor.
 
-## 🎵 Features
+## Features
 
 - **Playback Control**: Play, pause, skip tracks, and control volume directly from VS Code
 - **Playlist Management**: Browse and select from your Spotify playlists
@@ -13,7 +13,7 @@ A powerful VS Code extension that brings seamless Spotify control right into you
 - **Status Bar Integration**: Quick access to player controls from the status bar
 - **Dark Theme Support**: Beautiful UI that respects your VS Code theme
 
-## 🚀 Installation
+## Installation
 
 1. Open VS Code
 2. Go to Extensions view (Ctrl+Shift+X / Cmd+Shift+X)
@@ -21,7 +21,7 @@ A powerful VS Code extension that brings seamless Spotify control right into you
 4. Click Install
 5. Reload VS Code when prompted
 
-## ⚙️ Setup & Configuration
+## Setup & Configuration
 
 ### Initial Setup
 1. After installation, click on the Xilie icon in the activity bar
@@ -40,19 +40,19 @@ A powerful VS Code extension that brings seamless Spotify control right into you
 - Make sure you have Spotify open on at least one device for playback controls to work
 - Check that your Spotify Premium subscription is active
 
-## 🎯 Usage
+## Usage
 
 - **Activity Bar**: Click the Xilie icon in the activity bar to open the main panel
 - **Status Bar**: Click the play/pause icon in the status bar to control playback
 - **Command Palette**: Use `Ctrl+Shift+P` (or `Cmd+Shift+P` on Mac) and type "Xilie" to see available commands
 
-## 📦 Requirements
+## Requirements
 
 - VS Code 1.99.0 or higher
 - Active Spotify Premium account
 - Node.js (for development)
 
-## 🔧 Extension Settings
+## Extension Settings
 
 This extension contributes the following settings:
 
@@ -60,22 +60,22 @@ This extension contributes the following settings:
 * `xilie.refreshInterval`: How often to refresh player state in milliseconds (default: 5000)
 * `xilie.defaultVolume`: Default volume level (0-100, default: 50)
 
-## 🐛 Known Issues
+## Known Issues
 
 - Playback controls may be slightly delayed due to Spotify API rate limiting
 - Some features may require re-authentication after extended periods of inactivity
 
-## 📝 Release Notes
+## Release Notes
 
 ### 0.0.1
 
 Initial release of Xilie Spotify - Basic playback controls and playlist management
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-## 📜 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
