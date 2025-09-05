@@ -1,6 +1,4 @@
-import { config } from "dotenv";
-import { resolve } from "path";
-config({ path: resolve(__dirname, "..", ".env") }); // Load environment variables from .env file
+// Configuration settings for the Xilie extension
 /**
  * Application configuration settings.
  *
