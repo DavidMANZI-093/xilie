@@ -4,7 +4,6 @@ import { SpotifyApi } from "./spotify/api";
 import { SpotifySidebarProvider } from "./ui/sidebar";
 import { SpotifyStatusBar } from "./ui/statusbar";
 import { logger } from "./utils/logger";
-import { SpotifyTrack } from "./types";
 
 // Global instances (initialized in activate)
 let spotifyAuth: SpotifyAuth;

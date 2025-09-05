@@ -1,15 +1,9 @@
-import * as vscode from "vscode";
 import { SpotifyAuth } from "./auth";
 import { logger } from "../utils/logger";
-import { formatJSON } from "../utils/formatter";
 import {
-	SpotifyError,
 	SpotifyPlaybackState,
 	SpotifyPagingObject,
 	SpotifyPlaylist,
-	SpotifyDevice,
-	SpotifyArtist,
-	SpotifyTrack,
 	SpotifyUser,
 } from "../types/spotify";
 

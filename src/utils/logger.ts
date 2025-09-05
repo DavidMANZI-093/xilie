@@ -1,5 +1,3 @@
-import { SETTINGS } from "../config/settings";
-
 export class Logger {
 	private active: boolean = true;
 	private prefixes: Record<string, string> = {
