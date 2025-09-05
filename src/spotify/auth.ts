@@ -220,14 +220,14 @@ export class SpotifyAuth {
 			try {
 				accessToken = await this.refreshAccessToken(refreshToken!);
 			} catch (error: any) {
-				vscode.window.showErrorMessage(
-					`Xilie: Failed to refresh Spotify token. Please re-authenticate`,
-				);
+				// vscode.window.showErrorMessage(
+				// 	`Xilie: Failed to refresh Spotify token. Please re-authenticate`,
+				// );
 				// Clear invalid tokens
 				await this.clearTokens();
-				throw new Error(
-					"No valid Spotify access token or refresh token. Please authenticate.",
-				);
+				// throw new Error(
+				// 	"No valid Spotify access token or refresh token. Please authenticate.",
+				// );
 			}
 		}
 		if (!accessToken) {
