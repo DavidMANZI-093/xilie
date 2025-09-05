@@ -2,11 +2,11 @@ import * as vscode from "vscode";
 import crypto from "crypto";
 
 /**
- * Manages Spotify OAuth 2.0 Authorizaion flow with PKCE.
+ * Manages Spotify OAuth 2.0 Authorization flow with PKCE.
  * Handles authentication, token storage, and token refreshing.
  */
 export class SpotifyAuth {
-	private static readonly ACCESS_TOKEN_KEY = "spotifyAccessTOken";
+	private static readonly ACCESS_TOKEN_KEY = "spotifyAccessToken";
 	private static readonly REFRESH_TOKEN_KEY = "spotifyRefreshToken";
 	private static readonly TOKEN_EXPIRY_KEY = "spotifyTokenExpiry";
 
@@ -248,7 +248,7 @@ export class SpotifyAuth {
 	 * @returns The new access token.
 	 */
 	private async refreshAccessToken(refreshToken: string): Promise<string> {
-		const tokenEndpoint = "htpps://accounts.spotify.com/api/token";
+		const tokenEndpoint = "https://accounts.spotify.com/api/token";
 		const params = new URLSearchParams();
 		params.append("grant_type", "refresh_token");
 		params.append("refresh_token", refreshToken);
@@ -312,6 +312,18 @@ export class SpotifyAuth {
 		}
 	}
 
+	public async cancelAuthentication(): Promise<void> {
+		this._currentAuthPromise = undefined; // Clear the current auth promise
+		if (this._uriHandlerDisposable) {
+			this._uriHandlerDisposable.dispose();
+			this._uriHandlerDisposable = undefined;
+			await this.clearTokens(); // Clear any stored tokens
+			vscode.window.showInformationMessage("Spotify authentication cancelled.");
+		} else {
+			vscode.window.showInformationMessage("No authentication in progress.");
+		}
+	}
+
 	/**
 	 * Clears all stored Spotify authentication tokens.
 	 */
@@ -319,8 +331,8 @@ export class SpotifyAuth {
 		await this.secrets.delete(SpotifyAuth.ACCESS_TOKEN_KEY);
 		await this.secrets.delete(SpotifyAuth.REFRESH_TOKEN_KEY);
 		await this.secrets.delete(SpotifyAuth.TOKEN_EXPIRY_KEY);
-		vscode.window.showInformationMessage(
-			`Xilie: Spotify tokens cleared. Please re-authenticate.`,
-		);
+		// vscode.window.showInformationMessage(
+		// 	`Xilie: Spotify tokens cleared. Please re-authenticate.`,
+		// );
 	}
 }
