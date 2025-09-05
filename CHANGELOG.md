@@ -2,7 +2,7 @@
 
 All notable changes to the "xilie" extension will be documented in this file.
 
-## [0.0.1] - 2024-12-19
+## [0.0.1] - 2025-09-05
 
 ### Added
 - Initial release of Xilie Spotify extension
