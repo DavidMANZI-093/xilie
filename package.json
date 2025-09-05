@@ -1,25 +1,64 @@
 {
   "name": "xilie",
   "displayName": "Xilie",
-  "description": "A developer's extension that lets you control your Spotify hearing experience from your IDE.",
+  "description": "A VS Code extension that provides seamless Spotify control directly from your IDE. Play, pause, skip tracks, manage playlists, and control volume without leaving your development environment.",
   "publisher": "d3fault",
   "version": "0.0.1",
+  "icon": "icons/xilie-icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DavidMANZI-093/xilie.git"
+  },
   "engines": {
-    "vscode": "^1.102.0"
+    "vscode": "^1.99.0"
   },
   "categories": [
     "Other"
+  ],
+  "keywords": [
+    "spotify",
+    "music",
+    "audio",
+    "player",
+    "playback",
+    "playlist",
+    "media",
+    "productivity",
+    "entertainment"
   ],
   "activationEvents": [
     "onStartupFinished"
   ],
   "main": "./dist/extension.js",
   "contributes": {
+    "configuration": {
+      "title": "Xilie",
+      "properties": {
+        "xilie.showStatusBarItem": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show/hide the status bar control"
+        },
+        "xilie.refreshInterval": {
+          "type": "number",
+          "default": 5000,
+          "minimum": 1000,
+          "description": "How often to refresh player state in milliseconds"
+        },
+        "xilie.defaultVolume": {
+          "type": "number",
+          "default": 50,
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Default volume level (0-100)"
+        }
+      }
+    },
     "viewsContainers": {
       "activitybar": [
         {
           "id": "xilie-explorer",
-          "title": "Xilie Spotify",
+          "title": "Xilie",
           "icon": "icons/xilie-icon.png"
         }
       ]
@@ -32,13 +71,60 @@
           "icon": "$(list-unordered)"
         },
         {
-          "id": "xilieAlbums",
-          "name": "My Albums",
+          "id": "xilieArtists",
+          "name": "My Artists",
+          "icon": "$(list-unordered)"
+        },
+        {
+          "id": "xilieDevices",
+          "name": "My Devices",
           "icon": "$(list-unordered)"
         }
       ]
     },
-    
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "xilie.authenticate",
+          "when": "false"
+        },
+        {
+          "command": "xilie.selectDevice",
+          "when": "false"
+        },
+        {
+          "command": "xilie.playTrack",
+          "when": "false"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "xilie.refreshPlaylists",
+          "when": "view == xiliePlaylists",
+          "group": "navigation"
+        },
+        {
+          "command": "xilie.collapsePlaylists",
+          "when": "view == xiliePlaylists",
+          "group": "navigation"
+        },
+        {
+          "command": "xilie.refreshArtists",
+          "when": "view == xilieArtists",
+          "group": "navigation"
+        },
+        {
+          "command": "xilie.collapseArtists",
+          "when": "view == xilieArtists",
+          "group": "navigation"
+        },
+        {
+          "command": "xilie.refreshDevices",
+          "when": "view == xilieDevices",
+          "group": "navigation"
+        }
+      ]
+    },
     "authentication": [
       {
         "id": "spotify",
@@ -51,6 +137,14 @@
         "title": "Xilie: Authenticate with Spotify"
       },
       {
+        "command": "xilie.signOut",
+        "title": "Xilie: Sign Out"
+      },
+      {
+        "command": "xilie.showXilie",
+        "title": "Xilie: Show Xilie View"
+      },
+      {
         "command": "xilie.playPause",
         "title": "Xilie: Play/Pause"
       },
@@ -61,15 +155,64 @@
       {
         "command": "xilie.previousTrack",
         "title": "Xilie: Previous Track"
+      },
+      {
+        "command": "xilie.playTrack",
+        "title": "Xilie: Play Track"
+      },
+      {
+        "command": "xilie.selectDevice",
+        "title": "Xilie: Select Device"
+      },
+      {
+        "command": "xilie.refreshPlaylists",
+        "title": "Refresh Playlists",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "xilie.collapsePlaylists",
+        "title": "Collapse All Playlists",
+        "icon": "$(collapse-all)"
+      },
+      {
+        "command": "xilie.refreshArtists",
+        "title": "Refresh Artists",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "xilie.refreshDevices",
+        "title": "Refresh Devices",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "xilie.collapseArtists",
+        "title": "Collapse All Artists",
+        "icon": "$(collapse-all)"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "xilie.playPause",
+        "key": "ctrl+alt+space",
+        "when": "true"
+      },
+      {
+        "command": "xilie.nextTrack",
+        "key": "ctrl+alt+n",
+        "when": "true"
+      },
+      {
+        "command": "xilie.previousTrack",
+        "key": "ctrl+alt+p",
+        "when": "true"
+      },
+      {
+        "command": "xilie.showXilie",
+        "key": "ctrl+alt+x",
+        "when": "true"
       }
     ]
   },
-  "protocols": [
-    {
-      "scheme": "xilie",
-      "handler": "xilie"
-    }
-  ],
   "scripts": {
     "vscode:prepublish": "npm run package",
     "compile": "npm run check-types && npm run lint && node esbuild.js",
@@ -89,7 +232,7 @@
     "@biomejs/biome": "2.1.3",
     "@types/mocha": "^10.0.10",
     "@types/node": "20.x",
-    "@types/vscode": "^1.102.0",
+    "@types/vscode": "^1.99.0",
     "@typescript-eslint/eslint-plugin": "^8.31.1",
     "@typescript-eslint/parser": "^8.31.1",
     "@vscode/test-cli": "^0.0.11",
@@ -98,7 +241,5 @@
     "npm-run-all": "^4.1.5",
     "typescript": "^5.8.3"
   },
-  "dependencies": {
-    "dotenv": "^17.2.1"
-  }
+  "dependencies": {}
 }
