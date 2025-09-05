@@ -76,14 +76,7 @@ export class SpotifySidebarProvider
 						const response = await this.spotifyApi.getPlaylistTracks(
 							element.spotifyId,
 						);
-						const tracks = response.items?.map((item: any) => item.track) || [
-							{
-								name: "No tracks found",
-								uri: "",
-								id: "",
-								artists: [{ name: "N/A" }],
-							},
-						]; // No tracks found
+						const tracks = response.items?.map((item: any) => item.track) || [];
 						return tracks.map((track: any) => SpotifyTreeItem.fromTrack(track));
 					} catch (error) {
 						console.error("Error fetching playlist tracks:", error);
@@ -96,14 +89,7 @@ export class SpotifySidebarProvider
 						);
 						const tracks = Array.isArray(response)
 							? response
-							: response?.tracks || [
-									{
-										name: "No tracks found",
-										uri: "",
-										id: "",
-										artists: [{ name: "N/A" }],
-									},
-								];
+							: response?.tracks || [];
 						return tracks.map((track: any) => SpotifyTreeItem.fromTrack(track));
 					} catch (error) {
 						console.error("Error fetching artist top tracks:", error);

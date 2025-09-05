@@ -50,7 +50,7 @@ export class SpotifyAuth {
 				authUrl.searchParams.append("redirect_uri", this.REDIRECT_URI);
 				authUrl.searchParams.append(
 					"scope",
-					"user-read-private user-read-email user-read-playback-state user-modify-playback-state user-read-currently-playing playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify-private user-library-read user-library-modify user-top-read user-read-recently-played",
+					"user-read-private user-read-email user-read-playback-state user-modify-playback-state user-read-currently-playing playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify-private user-library-read user-follow-read user-library-modify user-top-read user-read-recently-played",
 				); // Request necessary scopes
 				authUrl.searchParams.append("code_challenge_method", "S256");
 				authUrl.searchParams.append("code_challenge", codeChallenge);
@@ -217,14 +217,8 @@ export class SpotifyAuth {
 		// Check if token is missing or expired (with a small buffer)
 		if (!accessToken || !refreshToken || Date.now() >= expiryTime - 60 * 1000) {
 			// Refresh 1 minute before actual expiry
-			vscode.window.showInformationMessage(
-				`Xilie: Refreshing Spotify access token...`,
-			);
 			try {
 				accessToken = await this.refreshAccessToken(refreshToken!);
-				vscode.window.showInformationMessage(
-					`Xilie: Spotify access token refreshed.`,
-				);
 			} catch (error: any) {
 				vscode.window.showErrorMessage(
 					`Xilie: Failed to refresh Spotify token. Please re-authenticate`,
