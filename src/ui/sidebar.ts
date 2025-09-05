@@ -2,10 +2,7 @@ import * as vscode from "vscode";
 import { SpotifyApi } from "../spotify/api";
 import {
 	SpotifyTreeItem,
-	SpotifyPlaylist,
 	SpotifyDevice,
-	SpotifyArtist,
-	SpotifyTrack,
 } from "../types";
 
 export class SpotifySidebarProvider
