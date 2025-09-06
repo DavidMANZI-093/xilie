@@ -36,9 +36,16 @@ A powerful VS Code extension that brings seamless Spotify control right into you
 - **Active Spotify session** on at least one device
 
 ### Troubleshooting
-- If authentication fails, try signing out and signing in again
+
+#### Authentication Issues
+- **"Authentication Failed" or "Access Denied"**: The extension is in developer mode with limited access. Email [manzidavid093@gmail.com](mailto:manzidavid093@gmail.com) with your Spotify email to request access.
+- If you're already approved and authentication fails, try signing out and signing in again
+- Clear your browser cache and try authenticating again
+
+#### Playback Issues  
 - Make sure you have Spotify open on at least one device for playback controls to work
 - Check that your Spotify Premium subscription is active
+- Ensure you have an active internet connection
 
 ## Usage
 
@@ -52,6 +59,15 @@ A powerful VS Code extension that brings seamless Spotify control right into you
 - Active Spotify Premium account
 - Node.js (for development)
 
+## Beta Access Notice
+
+⚠️ **Developer Mode Limitation**: This extension is currently in Spotify's developer mode, which means:
+- Only users explicitly added to the approved list can authenticate
+- If you encounter "Authentication Failed" or "Access Denied" errors, you need to be allowlisted
+- This is a temporary limitation during the beta phase
+
+**Need Access?** Email [manzidavid093@gmail.com](mailto:manzidavid093@gmail.com) with your Spotify email to be added to the approved users list. This limitation will be removed once the extension completes Spotify's app review process.
+
 ## Extension Settings
 
 This extension contributes the following settings:
@@ -62,8 +78,10 @@ This extension contributes the following settings:
 
 ## Known Issues
 
+- **Limited Beta Access**: Currently in Spotify developer mode - only pre-approved users can authenticate. Contact [manzidavid093@gmail.com](mailto:manzidavid093@gmail.com) for access.
 - Playback controls may be slightly delayed due to Spotify API rate limiting
 - Some features may require re-authentication after extended periods of inactivity
+- Developer mode quota resets may require re-authentication
 
 ## Release Notes
 
