@@ -2,7 +2,8 @@ import * as vscode from "vscode";
 import crypto from "crypto";
 
 /**
- * Manages Spotify OAuth 2.0 Authorization flow with PKCE.
+ * Manages Spotify OAuth 2.0 Authorization Code flow with PKCE (Proof Key for Code Exchange).
+ * Uses PKCE-only approach without client secret for enhanced security.
  * Handles authentication, token storage, and token refreshing.
  */
 export class SpotifyAuth {
@@ -11,7 +12,6 @@ export class SpotifyAuth {
 	private static readonly TOKEN_EXPIRY_KEY = "spotifyTokenExpiry";
 
 	private readonly CLIENT_ID = "b61c64d6e5574e379e31dce5002d845c";
-	private readonly CLIENT_SECRET = "54267a4f7c0f487e9e382eba3d8bb0b7";
 
 	private readonly REDIRECT_URI: string;
 	private readonly secrets: vscode.SecretStorage;
@@ -162,16 +162,11 @@ export class SpotifyAuth {
 		params.append("redirect_uri", this.REDIRECT_URI);
 		params.append("code_verifier", codeVerifier);
 
-		// For a VS Code extension, we can include the client_secret here
-		// as the request is made from the secure extension host, not the browser.
-		// This makes it behave like a "confidential client" for the token exchange.
-		const authHeader = `Basic ${Buffer.from(`${this.CLIENT_ID}:${this.CLIENT_SECRET}`).toString("base64")}`;
-
+		// PKCE-only flow: no client secret needed, following Spotify's recommended approach
 		const response = await fetch(tokenEndpoint, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/x-www-form-urlencoded",
-				Authorization: authHeader,
 			},
 			body: params.toString(),
 		});
@@ -248,13 +243,11 @@ export class SpotifyAuth {
 		params.append("refresh_token", refreshToken);
 		params.append("client_id", this.CLIENT_ID); // Client ID is required for refresh token grant
 
-		const authHeader = `Basic ${Buffer.from(`${this.CLIENT_ID}:${this.CLIENT_SECRET}`).toString("base64")}`;
-
+		// PKCE-only flow: no client secret needed for token refresh
 		const response = await fetch(tokenEndpoint, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/x-www-form-urlencoded",
-				Authorization: authHeader,
 			},
 			body: params.toString(),
 		});

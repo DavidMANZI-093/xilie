@@ -2,6 +2,18 @@
 
 All notable changes to the "xilie" extension will be documented in this file.
 
+## [0.0.2] - 2025-09-06
+
+### Security
+- **Enhanced Authentication Security**: Migrated to PKCE-only OAuth 2.0 flow
+- Removed client secret from authentication process for improved security
+- Follows Spotify's recommended approach for public clients like VS Code extensions
+
+### Technical
+- Eliminated hardcoded client secret from codebase
+- Simplified token exchange and refresh flows using PKCE verification only
+- Updated authentication documentation to reflect security improvements
+
 ## [0.0.1] - 2025-09-05
 
 ### Added
