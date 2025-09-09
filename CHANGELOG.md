@@ -2,6 +2,23 @@
 
 All notable changes to the "xilie" extension will be documented in this file.
 
+## [0.0.3] - 2025-09-09
+
+### Added
+- **VS Code Variants Support**: Added fallback authentication flow for VS Code variants that don't support URI handlers
+- Support for Code-OSS, VSCodium, and other VS Code distributions
+- Manual authorization code input when automatic redirect isn't available
+
+### Enhanced
+- **Authentication Flow**: Improved authentication with dual redirect URI support
+- Better error handling for authentication cancellation
+- More robust authentication state management
+
+### Technical
+- Implemented redirect URI mapping system with browser and VS Code fallbacks
+- Added `https://xilie-callback.vercel.app` as browser fallback redirect URI
+- Enhanced authentication promise handling for better user experience
+
 ## [0.0.2] - 2025-09-06
 
 ### Security

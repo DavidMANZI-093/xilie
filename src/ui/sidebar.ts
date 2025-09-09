@@ -1,9 +1,6 @@
 import * as vscode from "vscode";
 import { SpotifyApi } from "../spotify/api";
-import {
-	SpotifyTreeItem,
-	SpotifyDevice,
-} from "../types";
+import { SpotifyTreeItem, SpotifyDevice } from "../types";
 
 export class SpotifySidebarProvider
 	implements vscode.TreeDataProvider<SpotifyTreeItem>

@@ -14,10 +14,12 @@ let sidebarViews: { [key: string]: SpotifySidebarProvider };
 export function activate(context: vscode.ExtensionContext) {
 	logger.info("Xilie is now active!");
 
-	spotifyAuth = new SpotifyAuth(
-		context.secrets,
-		"vscode://d3fault.xilie/auth/callback",
-	);
+	const redirectUris = new Map<string, string>([
+		["vscode", "vscode://d3fault.xilie/auth/callback"],
+		["browser", "https://xilie-callback.vercel.app"],
+	]);
+
+	spotifyAuth = new SpotifyAuth(context.secrets, redirectUris);
 	spotifyApi = new SpotifyApi(spotifyAuth);
 
 	statusBar = new SpotifyStatusBar(spotifyApi);

@@ -28,8 +28,9 @@ A powerful VS Code extension that brings seamless Spotify control right into you
 2. Click "Connect to Spotify" to authenticate
 3. You'll be redirected to Spotify's authorization page in your browser
 4. Click "Agree" to authorize Xilie to access your Spotify account
-5. You'll be redirected back to VS Code automatically
-6. You're all set! Start controlling your music
+5. **VS Code**: You'll be redirected back to VS Code automatically
+6. **Other VS Code variants** (Code-OSS, VSCodium, etc.): Copy the authorization code from the browser and paste it when prompted
+7. You're all set! Start controlling your music
 
 ### Requirements
 - **Spotify Premium account** (required for playback control)
@@ -39,6 +40,7 @@ A powerful VS Code extension that brings seamless Spotify control right into you
 
 #### Authentication Issues
 - **"Authentication Failed" or "Access Denied"**: The extension is in developer mode with limited access. Email [manzidavid093@gmail.com](mailto:manzidavid093@gmail.com) with your Spotify email to request access.
+- **VS Code Variants**: If using Code-OSS, VSCodium, or other VS Code variants, you'll need to manually copy the authorization code from your browser when prompted
 - If you're already approved and authentication fails, try signing out and signing in again
 - Clear your browser cache and try authenticating again
 
@@ -85,9 +87,17 @@ This extension contributes the following settings:
 
 ## Release Notes
 
+### 0.0.3
+
+Enhanced compatibility with VS Code variants - Added fallback authentication flow for Code-OSS, VSCodium, and other VS Code variants
+
+### 0.0.2
+
+Enhanced authentication security with PKCE-only OAuth 2.0 flow
+
 ### 0.0.1
 
-Initial release of Xilie Spotify - Basic playback controls and playlist management
+Initial release of Xilie Spotify - Basic playbook controls and playlist management
 
 ## Contributing
 

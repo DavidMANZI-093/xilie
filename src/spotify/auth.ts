@@ -13,16 +13,19 @@ export class SpotifyAuth {
 
 	private readonly CLIENT_ID = "b61c64d6e5574e379e31dce5002d845c";
 
-	private readonly REDIRECT_URI: string;
+	private readonly REDIRECT_URIS: Map<string, string>;
 	private readonly secrets: vscode.SecretStorage;
 
 	// Internal state for the current authentication attempt
 	private _currentAuthPromise: Promise<string> | undefined;
 	private _uriHandlerDisposable: vscode.Disposable | undefined;
 
-	constructor(secretStorage: vscode.SecretStorage, redirectUri: string) {
+	constructor(
+		secretStorage: vscode.SecretStorage,
+		redirectUris: Map<string, string>,
+	) {
 		this.secrets = secretStorage;
-		this.REDIRECT_URI = redirectUri;
+		this.REDIRECT_URIS = redirectUris;
 	}
 
 	public async authenticate(): Promise<string> {
@@ -43,11 +46,19 @@ export class SpotifyAuth {
 				// Store the code_verifier securely for later use in the token exchange
 				await this.secrets.store("xilie.pkce.codeVerifier", codeVerifier);
 
-				// 2. Construct the Spotify authorization URL
+				// 2. Determine which redirect URI to use based on URI handler support
+				const supportsUriHandler =
+					typeof vscode.window.registerUriHandler === "function";
+
+				const redirectUri = supportsUriHandler
+					? this.REDIRECT_URIS.get("vscode")!
+					: this.REDIRECT_URIS.get("browser")!;
+
+				// 3. Construct the Spotify authorization URL
 				const authUrl = new URL("https://accounts.spotify.com/authorize");
 				authUrl.searchParams.append("client_id", this.CLIENT_ID);
 				authUrl.searchParams.append("response_type", "code");
-				authUrl.searchParams.append("redirect_uri", this.REDIRECT_URI);
+				authUrl.searchParams.append("redirect_uri", redirectUri);
 				authUrl.searchParams.append(
 					"scope",
 					"user-read-private user-read-email user-read-playback-state user-modify-playback-state user-read-currently-playing playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify-private user-library-read user-follow-read user-library-modify user-top-read user-read-recently-played",
@@ -56,46 +67,98 @@ export class SpotifyAuth {
 				authUrl.searchParams.append("code_challenge", codeChallenge);
 				authUrl.searchParams.append("state", this.generateRandomString(16)); // Optional state parameter for CSRF protection
 
-				// 3. Register a URI handler to capture the redirect from Spotify
+				// 4. Register a URI handler to capture the redirect from Spotify
 				// This handler will be called when the browser redirects back to extension's URI
-				this._uriHandlerDisposable = vscode.window.registerUriHandler({
-					handleUri: async (uri: vscode.Uri) => {
-						this._uriHandlerDisposable?.dispose(); // Dispose handler after first use
-						this._uriHandlerDisposable = undefined;
+				if (supportsUriHandler) {
+					this._uriHandlerDisposable = vscode.window.registerUriHandler({
+						handleUri: async (uri: vscode.Uri) => {
+							this._uriHandlerDisposable?.dispose(); // Dispose handler after first use
+							this._uriHandlerDisposable = undefined;
 
-						// Parse the query string from the redirect URI
-						const params = new URLSearchParams(uri.query);
+							const params = new URLSearchParams(uri.query);
+							const code = params.get("code");
+							const error = params.get("error");
 
-						const code = params.get("code");
-						const error = params.get("error");
+							if (error) {
+								reject(new Error(`Spotify authorization error: ${error}`));
+								return;
+							}
 
-						if (error) {
-							reject(new Error(`Spotify authorization error: ${error}`));
-							return;
-						}
-						if (!code) {
-							reject(new Error("No authorization code received from Spotify."));
-							return;
-						}
+							if (!code) {
+								reject(
+									new Error("No authorization code received from Spotify."),
+								);
+								return;
+							}
 
-						// 4. Exchange the authorization code for an access token
+							// 5. Exchange the authorization code for an access token
+							try {
+								const accessToken = await this.exchangeCodeForToken(
+									code,
+									redirectUri,
+								);
+								resolve(accessToken);
+							} catch (tokenError: any) {
+								reject(
+									new Error(
+										`Failed to exchange code for token: ${tokenError.message || tokenError}`,
+									),
+								);
+							} finally {
+								this._currentAuthPromise = undefined; // Reset the promise
+							}
+						},
+					});
+				} else {
+					// Fallback for other variants of VS Code that don't support URI handlers
+					this._currentAuthPromise = new Promise(async (resolve, reject) => {
 						try {
-							const accessToken = await this.exchangeCodeForToken(code);
-							resolve(accessToken);
-						} catch (tokenError: any) {
+							await vscode.env.openExternal(
+								vscode.Uri.parse(authUrl.toString()),
+							);
+							vscode.window.showInformationMessage(
+								"Please authorize extension in your browser. After authorization, copy the authorization code and paste it here.",
+							);
+
+							const code = await vscode.window.showInputBox({
+								prompt: "Enter authorization code",
+								placeHolder: "Authorization code",
+								ignoreFocusOut: true,
+							});
+
+							if (!code) {
+								reject(new Error("No authorization code received."));
+								this._currentAuthPromise = undefined;
+								return;
+							}
+
+							// Exchange the authorization code for an access token
+							try {
+								const accessToken = await this.exchangeCodeForToken(
+									code,
+									redirectUri,
+								);
+								resolve(accessToken);
+							} catch (tokenError: any) {
+								reject(
+									new Error(
+										`Failed to exchange code for token: ${tokenError.message || tokenError}`,
+									),
+								);
+							} finally {
+								this._currentAuthPromise = undefined; // Reset the promise
+							}
+						} catch (error: any) {
 							reject(
 								new Error(
-									`Failed to exchange code for token: ${tokenError.message || tokenError}`,
+									`Authentication initiation failed: ${error.message || error}`,
 								),
 							);
 						} finally {
-							this._currentAuthPromise = undefined; // Reset the promise
+							this._currentAuthPromise = undefined;
 						}
-					},
-				});
-
-				// 5. Open the authentication URL in the user's default browser
-				await vscode.env.openExternal(vscode.Uri.parse(authUrl.toString()));
+					});
+				}
 			} catch (error: any) {
 				this._uriHandlerDisposable?.dispose();
 				this._uriHandlerDisposable = undefined;
@@ -143,9 +206,13 @@ export class SpotifyAuth {
 	 * Exchanges the authorization code for an access token using PKCE.
 	 * This is a server-to-server (or extension-host-to-server) request.
 	 * @param code The authorization code received from Spotify.
+	 * @param redirectUri The redirect URI used in the authorization request.
 	 * @returns The access token.
 	 */
-	private async exchangeCodeForToken(code: string): Promise<string> {
+	private async exchangeCodeForToken(
+		code: string,
+		redirectUri: string,
+	): Promise<string> {
 		const tokenEndpoint = "https://accounts.spotify.com/api/token";
 		const codeVerifier = await this.secrets.get("xilie.pkce.codeVerifier");
 
@@ -159,7 +226,7 @@ export class SpotifyAuth {
 		params.append("client_id", this.CLIENT_ID);
 		params.append("grant_type", "authorization_code");
 		params.append("code", code);
-		params.append("redirect_uri", this.REDIRECT_URI);
+		params.append("redirect_uri", redirectUri);
 		params.append("code_verifier", codeVerifier);
 
 		// PKCE-only flow: no client secret needed, following Spotify's recommended approach
