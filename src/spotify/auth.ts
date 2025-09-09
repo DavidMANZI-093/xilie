@@ -109,55 +109,53 @@ export class SpotifyAuth {
 							}
 						},
 					});
+
+					// Open the authentication URL in the user's default browser
+					await vscode.env.openExternal(vscode.Uri.parse(authUrl.toString()));
 				} else {
 					// Fallback for other variants of VS Code that don't support URI handlers
-					this._currentAuthPromise = new Promise(async (resolve, reject) => {
+					try {
+						await vscode.env.openExternal(
+							vscode.Uri.parse(authUrl.toString()),
+						);
+						vscode.window.showInformationMessage(
+							"Please authorize extension in your browser. After authorization, copy the authorization code and paste it here.",
+						);
+
+						const code = await vscode.window.showInputBox({
+							prompt: "Enter authorization code",
+							placeHolder: "Authorization code",
+							ignoreFocusOut: true,
+						});
+
+						if (!code) {
+							reject(new Error("No authorization code received."));
+							return;
+						}
+
+						// Exchange the authorization code for an access token
 						try {
-							await vscode.env.openExternal(
-								vscode.Uri.parse(authUrl.toString()),
+							const accessToken = await this.exchangeCodeForToken(
+								code,
+								redirectUri,
 							);
-							vscode.window.showInformationMessage(
-								"Please authorize extension in your browser. After authorization, copy the authorization code and paste it here.",
-							);
-
-							const code = await vscode.window.showInputBox({
-								prompt: "Enter authorization code",
-								placeHolder: "Authorization code",
-								ignoreFocusOut: true,
-							});
-
-							if (!code) {
-								reject(new Error("No authorization code received."));
-								this._currentAuthPromise = undefined;
-								return;
-							}
-
-							// Exchange the authorization code for an access token
-							try {
-								const accessToken = await this.exchangeCodeForToken(
-									code,
-									redirectUri,
-								);
-								resolve(accessToken);
-							} catch (tokenError: any) {
-								reject(
-									new Error(
-										`Failed to exchange code for token: ${tokenError.message || tokenError}`,
-									),
-								);
-							} finally {
-								this._currentAuthPromise = undefined; // Reset the promise
-							}
-						} catch (error: any) {
+							resolve(accessToken);
+						} catch (tokenError: any) {
 							reject(
 								new Error(
-									`Authentication initiation failed: ${error.message || error}`,
+									`Failed to exchange code for token: ${tokenError.message || tokenError}`,
 								),
 							);
 						} finally {
-							this._currentAuthPromise = undefined;
+							this._currentAuthPromise = undefined; // Reset the promise
 						}
-					});
+					} catch (error: any) {
+						reject(
+							new Error(
+								`Authentication initiation failed: ${error.message || error}`,
+							),
+						);
+					}
 				}
 			} catch (error: any) {
 				this._uriHandlerDisposable?.dispose();
