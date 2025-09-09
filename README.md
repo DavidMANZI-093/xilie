@@ -87,6 +87,10 @@ This extension contributes the following settings:
 
 ## Release Notes
 
+### 0.0.4
+
+Critical authentication fix - Resolved hanging authentication issue in VS Code variants and IDEs like Kiro, Windsurf
+
 ### 0.0.3
 
 Enhanced compatibility with VS Code variants - Added fallback authentication flow for Code-OSS, VSCodium, and other VS Code variants
@@ -97,7 +101,7 @@ Enhanced authentication security with PKCE-only OAuth 2.0 flow
 
 ### 0.0.1
 
-Initial release of Xilie Spotify - Basic playbook controls and playlist management
+Initial release of Xilie Spotify - Basic playback controls and playlist management
 
 ## Contributing
 

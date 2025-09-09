@@ -2,6 +2,19 @@
 
 All notable changes to the "xilie" extension will be documented in this file.
 
+## [0.0.4] - 2025-09-09
+
+### Fixed
+- **Critical Authentication Bug**: Resolved authentication hanging issue in fallback flow
+- Fixed nested Promise creation that prevented authentication completion in VS Code variants
+- Ensured browser opens correctly for IDEs without URI handler support (Kiro, Windsurf, etc.)
+- Fixed authentication flow completion for all VS Code distributions
+
+### Technical
+- Removed redundant Promise wrapper in fallback authentication path
+- Improved promise resolution handling in both URI handler and manual input flows
+- Enhanced error handling and state management during authentication
+
 ## [0.0.3] - 2025-09-09
 
 ### Added
