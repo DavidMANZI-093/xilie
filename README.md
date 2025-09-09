@@ -87,6 +87,10 @@ This extension contributes the following settings:
 
 ## Release Notes
 
+### 0.0.6
+
+Major improvements - Added Recent Tracks view, enhanced session management, improved error handling, and better empty state UX
+
 ### 0.0.5
 
 Unified authentication experience - All IDEs now use consistent manual code input for reliable authentication

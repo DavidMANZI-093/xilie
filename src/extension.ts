@@ -34,6 +34,7 @@ export function activate(context: vscode.ExtensionContext) {
 	sidebarViews = {
 		playlists: new SpotifySidebarProvider(spotifyApi, "xiliePlaylists"),
 		artists: new SpotifySidebarProvider(spotifyApi, "xilieArtists"),
+		recents: new SpotifySidebarProvider(spotifyApi, "xilieRecents"),
 		devices: new SpotifySidebarProvider(spotifyApi, "xilieDevices"),
 	};
 
@@ -135,7 +136,7 @@ export function activate(context: vscode.ExtensionContext) {
 			} catch (error: any) {
 				if (error.message.includes("No active device")) {
 					vscode.window
-						.showErrorMessage(
+						.showInformationMessage(
 							"No active Spotify device found. Please open Spotify on one of your devices and try again.",
 							"Open Spotify Web Player",
 						)
@@ -148,7 +149,7 @@ export function activate(context: vscode.ExtensionContext) {
 						});
 				} else if (error.message.includes("Premium")) {
 					vscode.window
-						.showErrorMessage(
+						.showInformationMessage(
 							"Spotify Premium is required for playback control. Please upgrade your account.",
 							"Learn More",
 						)
@@ -196,9 +197,24 @@ export function activate(context: vscode.ExtensionContext) {
 				vscode.window.showInformationMessage("Skipped to next track.");
 				updatePlaybackStatusBar(); // Update status bar immediately after action
 			} catch (error: any) {
-				vscode.window.showErrorMessage(
-					`Failed to skip track: ${error.message}`,
-				);
+				if (error.message.includes("No active device found")) {
+					vscode.window
+					.showInformationMessage(
+						"No active Spotify device found. Please open Spotify on one of your devices and try again.",
+						"Open Spotify Web Player",
+					)
+					.then((selection) => {
+						if (selection === "Open Spotify Web Player") {
+							vscode.env.openExternal(
+								vscode.Uri.parse("https://open.spotify.com"),
+							);
+						}
+					});
+				} else {
+					vscode.window.showErrorMessage(
+						`Failed to skip track: ${error.message}`,
+					);
+				}
 				logger.error(`Skip track error: ${error.message}`);
 			}
 		}),
@@ -211,9 +227,24 @@ export function activate(context: vscode.ExtensionContext) {
 				vscode.window.showInformationMessage("Skipped to previous track.");
 				updatePlaybackStatusBar(); // Update status bar immediately after action
 			} catch (error: any) {
-				vscode.window.showErrorMessage(
-					`Failed to skip track: ${error.message}`,
-				);
+				if (error.message.includes("No active device found")) {
+					vscode.window
+					.showInformationMessage(
+						"No active Spotify device found. Please open Spotify on one of your devices and try again.",
+						"Open Spotify Web Player",
+					)
+					.then((selection) => {
+						if (selection === "Open Spotify Web Player") {
+							vscode.env.openExternal(
+								vscode.Uri.parse("https://open.spotify.com"),
+							);
+						}
+					});
+				} else {
+					vscode.window.showErrorMessage(
+						`Failed to skip track: ${error.message}`,
+					);
+				}
 				logger.error(`Skip track error: ${error.message}`);
 			}
 		}),
@@ -231,9 +262,24 @@ export function activate(context: vscode.ExtensionContext) {
 					);
 					updatePlaybackStatusBar(); // Update status bar immediately after action
 				} catch (error: any) {
-					vscode.window.showErrorMessage(
-						`Failed to play playlist: ${error.message || error}`,
-					);
+					if (error.message.includes("No active device found")) {
+						vscode.window
+						.showInformationMessage(
+							"No active Spotify device found. Please open Spotify on one of your devices and try again.",
+							"Open Spotify Web Player",
+						)
+						.then((selection) => {
+							if (selection === "Open Spotify Web Player") {
+								vscode.env.openExternal(
+									vscode.Uri.parse("https://open.spotify.com"),
+								);
+							}
+						});
+					} else {
+						vscode.window.showErrorMessage(
+							`Failed to play playlist: ${error.message || error}`,
+						);
+					}
 					logger.error(`Play playlist error: ${error}`);
 				}
 			},
@@ -252,9 +298,18 @@ export function activate(context: vscode.ExtensionContext) {
 					updatePlaybackStatusBar();
 				} catch (error: any) {
 					if (error.message.includes("No active device found")) {
-						vscode.window.showInformationMessage(
+						vscode.window
+						.showInformationMessage(
 							"No active Spotify device found. Open Spotify on one of your devices and try again.",
-						);
+							"Open Spotify Web Player"
+						)
+						.then((selection) => {
+							if (selection === "Open Spotify Web Player") {
+								vscode.env.openExternal(
+									vscode.Uri.parse("https://open.spotify.com"),
+								);
+							}
+						});
 					} else {
 						vscode.window.showErrorMessage(
 							`Failed to play artist's top tracks: ${error.message || error}`,
@@ -273,9 +328,23 @@ export function activate(context: vscode.ExtensionContext) {
 				vscode.window.showInformationMessage(`Playing album: ${uri}`);
 				updatePlaybackStatusBar(); // Update status bar immediately after action
 			} catch (error: any) {
-				vscode.window.showErrorMessage(
-					`Failed to play album: ${error.message || error}`,
-				);
+				if (error.message.includes("No active device found")) {
+					vscode.window
+					.showInformationMessage(
+						"No active Spotify device found. Open Spotify on one of your devices and try again.",
+					)
+					.then((selection) => {
+						if (selection === "Open Spotify Web Player") {
+							vscode.env.openExternal(
+								vscode.Uri.parse("https://open.spotify.com"),
+							);
+						}
+					});
+				} else {
+					vscode.window.showErrorMessage(
+						`Failed to play album: ${error.message || error}`,
+					);
+				}
 				logger.error(`Play album error: ${error}`);
 			}
 		}),
@@ -292,9 +361,24 @@ export function activate(context: vscode.ExtensionContext) {
 					);
 					updatePlaybackStatusBar(); // Update status bar immediately after action
 				} catch (error: any) {
-					vscode.window.showErrorMessage(
-						`Failed to play track: ${error.message || error}`,
-					);
+					if (error.message.includes("No active device found")) {
+						vscode.window
+						.showInformationMessage(
+							"No active Spotify device found. Open Spotify on one of your devices and try again.",
+							"Open Spotify Web Player"
+						)
+						.then((selection) => {
+							if (selection === "Open Spotify Web Player") {
+								vscode.env.openExternal(
+									vscode.Uri.parse("https://open.spotify.com"),
+								);
+							}
+						});
+					} else {
+						vscode.window.showErrorMessage(
+							`Failed to play track: ${error.message || error}`,
+						);
+					}
 					logger.error(`Play track error: ${error.message}`);
 				}
 			},
@@ -332,6 +416,12 @@ export function activate(context: vscode.ExtensionContext) {
 	);
 
 	context.subscriptions.push(
+		vscode.commands.registerCommand("xilie.refreshRecents", () => {
+			sidebarViews["recents"].refresh();
+		}),
+	);
+
+	context.subscriptions.push(
 		vscode.commands.registerCommand("xilie.refreshDevices", () => {
 			sidebarViews["devices"].refresh();
 		}),
@@ -341,6 +431,10 @@ export function activate(context: vscode.ExtensionContext) {
 	vscode.window.registerTreeDataProvider(
 		"xiliePlaylists",
 		sidebarViews["playlists"],
+	);
+	vscode.window.registerTreeDataProvider(
+		"xilieRecents",
+		sidebarViews["recents"],
 	);
 	vscode.window.registerTreeDataProvider(
 		"xilieDevices",

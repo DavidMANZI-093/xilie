@@ -274,24 +274,39 @@ export class SpotifyAuth {
 		const expiryTime = expiryTimeStr ? parseInt(expiryTimeStr, 10) : 0;
 
 		// Check if token is missing or expired (with a small buffer)
-		if (!accessToken || !refreshToken || Date.now() >= expiryTime - 60 * 1000) {
+		if (!accessToken || Date.now() >= expiryTime - 60 * 1000) {
 			// Refresh 1 minute before actual expiry
+			if (!refreshToken) {
+				throw new Error("No refresh token available. Please re-authenticate.");
+			}
+
 			try {
-				accessToken = await this.refreshAccessToken(refreshToken!);
+				console.log("Refreshing Spotify access token...");
+				accessToken = await this.refreshAccessToken(refreshToken);
+				console.log("Successfully refreshed Spotify access token");
 			} catch (error: any) {
-				// vscode.window.showErrorMessage(
-				// 	`Xilie: Failed to refresh Spotify token. Please re-authenticate`,
-				// );
+				console.error("Failed to refresh Spotify token:", error.message);
+
+				// Show user-friendly error message
+				vscode.window.showErrorMessage(
+					"Spotify session expired. Please re-authenticate.",
+					"Re-authenticate"
+				).then((selection) => {
+					if (selection === "Re-authenticate") {
+						vscode.commands.executeCommand("xilie.authenticate");
+					}
+				});
+
 				// Clear invalid tokens
 				await this.clearTokens();
-				// throw new Error(
-				// 	"No valid Spotify access token or refresh token. Please authenticate.",
-				// );
+				throw new Error("Spotify session expired. Please re-authenticate.");
 			}
 		}
+
 		if (!accessToken) {
-			throw new Error("Failed to obtain Spotify access token.");
+			throw new Error("No valid Spotify access token. Please authenticate.");
 		}
+
 		return accessToken;
 	}
 
@@ -301,6 +316,10 @@ export class SpotifyAuth {
 	 * @returns The new access token.
 	 */
 	private async refreshAccessToken(refreshToken: string): Promise<string> {
+		if (!refreshToken) {
+			throw new Error("No refresh token provided");
+		}
+
 		const tokenEndpoint = "https://accounts.spotify.com/api/token";
 		const params = new URLSearchParams();
 		params.append("grant_type", "refresh_token");
@@ -318,23 +337,37 @@ export class SpotifyAuth {
 
 		if (!response.ok) {
 			const errorText = await response.text();
-			throw new Error(
-				`Spotify token refresh failed: ${response.status} - ${errorText}`,
-			);
+			console.error(`Token refresh failed: ${response.status}`, errorText);
+
+			// Handle specific error cases
+			if (response.status === 400) {
+				throw new Error("Invalid refresh token. Re-authentication required.");
+			} else if (response.status === 401) {
+				throw new Error("Refresh token expired. Re-authentication required.");
+			} else {
+				throw new Error(
+					`Spotify token refresh failed: ${response.status} - ${errorText}`,
+				);
+			}
 		}
 
 		const tokenResponse = (await response.json()) as {
 			access_token: string;
-			refresh_token: string;
+			refresh_token?: string;
 			expires_in: number;
 			[key: string]: any;
 		};
+
+		if (!tokenResponse.access_token) {
+			throw new Error("No access token received from refresh");
+		}
 
 		// Store new tokens securely
 		await this.secrets.store(
 			SpotifyAuth.ACCESS_TOKEN_KEY,
 			tokenResponse.access_token,
 		);
+
 		// A new refresh token might be provided, or the old one might remain valid.
 		// Always store the new one if provided.
 		if (tokenResponse.refresh_token) {
@@ -343,11 +376,15 @@ export class SpotifyAuth {
 				tokenResponse.refresh_token,
 			);
 		}
+
+		// Store expiry time (current time + expires_in seconds)
+		const expiryTime = Date.now() + (tokenResponse.expires_in * 1000);
 		await this.secrets.store(
 			SpotifyAuth.TOKEN_EXPIRY_KEY,
-			(Date.now() + tokenResponse.expires_in * 1000).toString(),
+			expiryTime.toString(),
 		);
 
+		console.log(`Token refreshed successfully. Expires at: ${new Date(expiryTime).toISOString()}`);
 		return tokenResponse.access_token;
 	}
 

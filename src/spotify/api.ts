@@ -68,17 +68,17 @@ export class SpotifyApi {
 
 				if (!response.ok) {
 					// Handle specific error cases
-					if (response.status === 404) {
-						throw new Error(
-							"Spotify resource not found. The requested item may have been removed or is not available.",
-						);
-					}
+					// if (response.status === 404) {
+					// 	throw new Error(
+					// 		"Spotify resource not found. The requested item may have been removed or is not available.",
+					// 	);
+					// }
 
-					if (response.status === 403) {
-						throw new Error(
-							"Access forbidden. You may not have the required Spotify Premium subscription or permissions.",
-						);
-					}
+					// if (response.status === 403) {
+					// 	throw new Error(
+					// 		"Access forbidden. You may not have the required Spotify Premium subscription or permissions.",
+					// 	);
+					// }
 
 					if (response.status === 429) {
 						const retryAfter = response.headers.get("Retry-After");
@@ -166,16 +166,32 @@ export class SpotifyApi {
 		limit: number = 50,
 		offset: number = 0,
 	): Promise<SpotifyPagingObject<SpotifyPlaylist>> {
-		return this._fetch(`/me/playlists?limit=${limit}&offset=${offset}`);
-	}
-
-	public async getRecentlyPlayed(
-		limit: number = 50,
-		offset: number = 0,
-	): Promise<any> {
-		return this._fetch(
-			`/me/player/recently-played?limit=${limit}&offset=${offset}`,
+		let res = await this._fetch(
+			`/me/playlists?limit=${limit}&offset=${offset}`,
 		);
+
+		// Safely handle pagination
+		try {
+			let next = res;
+			while (next && next.next) {
+				try {
+					next = await this._fetch(next.next.slice(26));
+					if (next && next.items) {
+						res.items = [...res.items, ...next.items];
+					} else {
+						break;
+					}
+				} catch (error) {
+					// Stop pagination if request fails
+					break;
+				}
+			}
+		} catch (error) {
+			// If pagination fails entirely, just return what we have
+			logger.warn("Pagination failed for playlists, returning partial results");
+		}
+
+		return res;
 	}
 
 	/**
@@ -190,18 +206,79 @@ export class SpotifyApi {
 		limit: number = 50,
 		offset: number = 0,
 	): Promise<any> {
-		return this._fetch(
+		let res = await this._fetch(
 			`/playlists/${playlistId}/tracks?limit=${limit}&offset=${offset}`,
 		);
+
+		// Safely handle pagination
+		try {
+			let next = res;
+			while (next && next.next) {
+				try {
+					next = await this._fetch(next.next.slice(26));
+					if (next && next.items) {
+						res.items = [...res.items, ...next.items];
+					} else {
+						break;
+					}
+				} catch (error) {
+					// Stop pagination if request fails
+					break;
+				}
+			}
+		} catch (error) {
+			// If pagination fails entirely, just return what we have
+			logger.warn("Pagination failed for playlist tracks, returning partial results");
+		}
+
+		return res;
+	}
+
+	/**
+	 * Fetches the recently played tracks for the current user.
+	 * @returns An object containing the recently played tracks.
+	 */
+	public async getRecentTracks(limit: number = 50): Promise<any> {
+		// Recently played endpoint uses cursor-based pagination, not offset
+		const res = await this._fetch(`/me/player/recently-played?limit=${limit}`);
+
+		// For recently played, we typically don't need to paginate through all results
+		// as users usually only care about the most recent tracks
+		return res;
 	}
 
 	/**
 	 * Fetches the artists followed by the current user.
 	 * @returns An object containing the followed artists.
 	 */
-	public async getFollowedArtists(): Promise<any> {
-		const response = await this._fetch(`/me/following?type=artist`);
-		return response;
+	public async getFollowedArtists(
+		limit: number = 50,
+		offset: number = 0,
+	): Promise<any> {
+		const res = await this._fetch(`/me/following?type=artist&limit=${limit}`);
+
+		// Safely handle pagination
+		try {
+			let next = res;
+			while (next && next.next) {
+				try {
+					next = await this._fetch(next.next.slice(26));
+					if (next && next.items) {
+						res.items = [...res.items, ...next.items];
+					} else {
+						break;
+					}
+				} catch (error) {
+					// Stop pagination if request fails
+					break;
+				}
+			}
+		} catch (error) {
+			// If pagination fails entirely, just return what we have
+			logger.warn("Pagination failed for followed artists, returning partial results");
+		}
+
+		return res;
 	}
 
 	/**

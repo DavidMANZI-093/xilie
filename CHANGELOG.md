@@ -2,6 +2,32 @@
 
 All notable changes to the "xilie" extension will be documented in this file.
 
+## [0.0.6] - 2025-09-09
+
+### Added
+- **Recent Tracks View**: New sidebar view showing recently played tracks with deduplication
+- **Empty State Messages**: All views now show "Nothing to show here..." when empty instead of blank space
+- **Enhanced Error Handling**: Robust pagination error handling prevents infinite loops and API failures
+- **Session Management**: Improved token refresh logic with better error reporting and user feedback
+
+### Fixed
+- **Token Refresh Issues**: Resolved silent token refresh failures that caused sessions to expire unexpectedly
+- **Pagination Errors**: Fixed "Cannot read properties of undefined (reading 'next')" errors in API calls
+- **Empty Views**: All sidebar views now gracefully handle empty states with user-friendly messages
+- **API Reliability**: Enhanced error handling in playlist, artist, and device fetching
+
+### Improved
+- **User Experience**: Clear error messages and automatic re-authentication prompts when sessions expire
+- **Debugging**: Added comprehensive logging for token refresh and API operations
+- **Stability**: Wrapped pagination logic in try-catch blocks to prevent crashes
+- **Performance**: Optimized API calls to stop pagination on failures instead of retrying indefinitely
+
+### Technical
+- Enhanced `getAccessToken()` method with proper error propagation and user notifications
+- Improved `refreshAccessToken()` method with detailed error handling and validation
+- Added null safety checks in all pagination loops
+- Implemented graceful degradation for partial API results
+
 ## [0.0.5] - 2025-09-09
 
 ### Changed
