@@ -2,6 +2,18 @@
 
 All notable changes to the "xilie" extension will be documented in this file.
 
+## [0.0.5] - 2025-09-09
+
+### Changed
+- **Unified Authentication Flow**: All IDEs now use manual code input for consistent authentication experience
+- Forced fallback authentication for all VS Code variants and IDEs (VS Code, Kiro, Windsurf, Code-OSS, VSCodium, etc.)
+- Eliminated URI handler variability across different IDE implementations
+
+### Improved
+- **Consistent User Experience**: Same authentication flow regardless of IDE or platform
+- **Reliability**: Manual code input works universally across all environments
+- **Predictability**: Users always know what to expect during authentication
+
 ## [0.0.4] - 2025-09-09
 
 ### Fixed

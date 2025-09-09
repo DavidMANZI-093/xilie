@@ -87,6 +87,10 @@ This extension contributes the following settings:
 
 ## Release Notes
 
+### 0.0.5
+
+Unified authentication experience - All IDEs now use consistent manual code input for reliable authentication
+
 ### 0.0.4
 
 Critical authentication fix - Resolved hanging authentication issue in VS Code variants and IDEs like Kiro, Windsurf

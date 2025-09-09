@@ -46,9 +46,8 @@ export class SpotifyAuth {
 				// Store the code_verifier securely for later use in the token exchange
 				await this.secrets.store("xilie.pkce.codeVerifier", codeVerifier);
 
-				// 2. Determine which redirect URI to use based on URI handler support
-				const supportsUriHandler =
-					typeof vscode.window.registerUriHandler === "function";
+				// 2. Force all IDEs to use manual code input fallback
+				const supportsUriHandler = false; // Force fallback for all IDEs
 
 				const redirectUri = supportsUriHandler
 					? this.REDIRECT_URIS.get("vscode")!
