@@ -3,7 +3,8 @@ import { SpotifyApi } from "../spotify/api";
 import { SpotifyTreeItem, SpotifyDevice } from "../types";
 
 export class SpotifySidebarProvider
-	implements vscode.TreeDataProvider<SpotifyTreeItem> {
+	implements vscode.TreeDataProvider<SpotifyTreeItem>
+{
 	private _onDidChangeTreeData: vscode.EventEmitter<
 		SpotifyTreeItem | undefined | void
 	> = new vscode.EventEmitter<SpotifyTreeItem | undefined | void>();
@@ -14,7 +15,7 @@ export class SpotifySidebarProvider
 	constructor(
 		private spotifyApi: SpotifyApi,
 		private viewId: string,
-	) { }
+	) {}
 
 	getTreeItem(element: SpotifyTreeItem): vscode.TreeItem {
 		return element;
@@ -49,7 +50,11 @@ export class SpotifySidebarProvider
 					return [this.createEmptyStateItem()];
 				case "xilieDevices":
 					const devicesResponse = await this.spotifyApi.getAvailableDevices();
-					if (devicesResponse && devicesResponse.devices && devicesResponse.devices.length > 0) {
+					if (
+						devicesResponse &&
+						devicesResponse.devices &&
+						devicesResponse.devices.length > 0
+					) {
 						return devicesResponse.devices.map((d: any) =>
 							SpotifyTreeItem.fromDevice({
 								id: d.id,
@@ -80,12 +85,16 @@ export class SpotifySidebarProvider
 						const response = await this.spotifyApi.getRecentTracks();
 						const tracks = Array.from(
 							new Map(
-								response.items?.map((item: any) => [item.track.id, item.track]) ||
-								[],
+								response.items?.map((item: any) => [
+									item.track.id,
+									item.track,
+								]) || [],
 							).values(),
 						);
 						if (tracks.length > 0) {
-							return tracks.map((track: any) => SpotifyTreeItem.fromTrack(track));
+							return tracks.map((track: any) =>
+								SpotifyTreeItem.fromTrack(track),
+							);
 						}
 						return [this.createEmptyStateItem()];
 					} catch (error) {
@@ -107,7 +116,9 @@ export class SpotifySidebarProvider
 						);
 						const tracks = response.items?.map((item: any) => item.track) || [];
 						if (tracks.length > 0) {
-							return tracks.map((track: any) => SpotifyTreeItem.fromTrack(track));
+							return tracks.map((track: any) =>
+								SpotifyTreeItem.fromTrack(track),
+							);
 						}
 						return [this.createEmptyStateItem()];
 					} catch (error) {
@@ -123,7 +134,9 @@ export class SpotifySidebarProvider
 							? response
 							: response?.tracks || [];
 						if (tracks.length > 0) {
-							return tracks.map((track: any) => SpotifyTreeItem.fromTrack(track));
+							return tracks.map((track: any) =>
+								SpotifyTreeItem.fromTrack(track),
+							);
 						}
 						return [this.createEmptyStateItem()];
 					} catch (error) {

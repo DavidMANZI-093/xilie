@@ -3,7 +3,7 @@
   "displayName": "Xilie",
   "description": "A VS Code extension that provides seamless Spotify control directly from your IDE. Play, pause, skip tracks, manage playlists, and control volume without leaving your development environment.",
   "publisher": "d3fault",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "icon": "icons/xilie-icon.png",
   "repository": {
     "type": "git",
@@ -167,12 +167,20 @@
         "title": "Xilie: Previous Track"
       },
       {
+        "command": "xilie.quickSearch",
+        "title": "Xilie: Quick Search"
+      },
+      {
         "command": "xilie.playTrack",
         "title": "Xilie: Play Track"
       },
       {
         "command": "xilie.selectDevice",
         "title": "Xilie: Select Device"
+      },
+      {
+        "command": "xilie.refreshAll",
+        "title": "Refresh All"
       },
       {
         "command": "xilie.refreshPlaylists",
@@ -209,21 +217,37 @@
       {
         "command": "xilie.playPause",
         "key": "ctrl+alt+space",
+        "mac": "cmd+alt+space",
         "when": "true"
       },
       {
         "command": "xilie.nextTrack",
         "key": "ctrl+alt+n",
+        "mac": "cmd+alt+n",
         "when": "true"
       },
       {
         "command": "xilie.previousTrack",
         "key": "ctrl+alt+p",
+        "mac": "cmd+alt+p",
+        "when": "true"
+      },
+      {
+        "command": "xilie.quickSearch",
+        "key": "ctrl+alt+s",
+        "mac": "cmd+alt+s",
+        "when": "true"
+      },
+      {
+        "command": "xilie.refreshAll",
+        "key": "ctrl+alt+r",
+        "mac": "cmd+alt+r",
         "when": "true"
       },
       {
         "command": "xilie.showXilie",
         "key": "ctrl+alt+x",
+        "mac": "cmd+alt+x",
         "when": "true"
       }
     ]

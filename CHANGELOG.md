@@ -2,6 +2,42 @@
 
 All notable changes to the "xilie" extension will be documented in this file.
 
+## [0.0.7] - 2025-09-17
+
+### Added
+- **Quick Search Feature**: Comprehensive search functionality accessible via `Ctrl+Alt+S` (or `Cmd+Alt+S` on Mac)
+- **Smart Search Filtering**: Filter results by type using prefixes like `artists:`, `tracks:`, `playlists:`, `albums:`
+- **Album Support**: Full album browsing, playback, and integration throughout the extension
+- **Collective Refresh**: New "Refresh All" command (`Ctrl+Alt+R` / `Cmd+Alt+R`) to refresh all sidebar views at once
+- **Recent Tracks View**: Dedicated sidebar view for recently played tracks with refresh capability
+- **Mac Keyboard Shortcuts**: Full support for Mac-specific keyboard shortcuts across all commands
+
+### Enhanced
+- **Search Results**: Play tracks, artists, playlists, and albums directly from search results
+- **Real-time Search**: Debounced search with instant results as you type
+- **Rich UI**: Enhanced Quick Pick interface with detailed item information and icons
+- **Individual Refresh**: Each sidebar view now has its own refresh button for targeted updates
+- **Cross-platform Shortcuts**: Consistent keyboard shortcuts for both Windows/Linux and Mac users
+
+### Improved
+- **Code Structure**: Significantly improved overall code organization and maintainability
+- **Authentication Process**: Enhanced auth flow with better error handling and user feedback
+- **API Integration**: Improved Spotify API integration with better error recovery
+- **User Experience**: More intuitive navigation and interaction patterns
+- **Platform Support**: Better Mac integration with native keyboard shortcut conventions
+
+### Technical
+- Enhanced search API with support for multiple content types simultaneously
+- Improved sidebar provider architecture for better extensibility
+- Better command organization and keyboard shortcut management
+- Enhanced logging and debugging capabilities for search operations
+- Cross-platform keyboard shortcut handling for Windows, Linux, and Mac
+
+### Fixes
+- Resolved various edge cases in search result handling
+- Improved error handling for failed search requests
+- Better handling of empty search results and network issues
+
 ## [0.0.6] - 2025-09-09
 
 ### Added

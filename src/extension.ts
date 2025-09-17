@@ -199,17 +199,17 @@ export function activate(context: vscode.ExtensionContext) {
 			} catch (error: any) {
 				if (error.message.includes("No active device found")) {
 					vscode.window
-					.showInformationMessage(
-						"No active Spotify device found. Please open Spotify on one of your devices and try again.",
-						"Open Spotify Web Player",
-					)
-					.then((selection) => {
-						if (selection === "Open Spotify Web Player") {
-							vscode.env.openExternal(
-								vscode.Uri.parse("https://open.spotify.com"),
-							);
-						}
-					});
+						.showInformationMessage(
+							"No active Spotify device found. Please open Spotify on one of your devices and try again.",
+							"Open Spotify Web Player",
+						)
+						.then((selection) => {
+							if (selection === "Open Spotify Web Player") {
+								vscode.env.openExternal(
+									vscode.Uri.parse("https://open.spotify.com"),
+								);
+							}
+						});
 				} else {
 					vscode.window.showErrorMessage(
 						`Failed to skip track: ${error.message}`,
@@ -229,17 +229,17 @@ export function activate(context: vscode.ExtensionContext) {
 			} catch (error: any) {
 				if (error.message.includes("No active device found")) {
 					vscode.window
-					.showInformationMessage(
-						"No active Spotify device found. Please open Spotify on one of your devices and try again.",
-						"Open Spotify Web Player",
-					)
-					.then((selection) => {
-						if (selection === "Open Spotify Web Player") {
-							vscode.env.openExternal(
-								vscode.Uri.parse("https://open.spotify.com"),
-							);
-						}
-					});
+						.showInformationMessage(
+							"No active Spotify device found. Please open Spotify on one of your devices and try again.",
+							"Open Spotify Web Player",
+						)
+						.then((selection) => {
+							if (selection === "Open Spotify Web Player") {
+								vscode.env.openExternal(
+									vscode.Uri.parse("https://open.spotify.com"),
+								);
+							}
+						});
 				} else {
 					vscode.window.showErrorMessage(
 						`Failed to skip track: ${error.message}`,
@@ -264,17 +264,17 @@ export function activate(context: vscode.ExtensionContext) {
 				} catch (error: any) {
 					if (error.message.includes("No active device found")) {
 						vscode.window
-						.showInformationMessage(
-							"No active Spotify device found. Please open Spotify on one of your devices and try again.",
-							"Open Spotify Web Player",
-						)
-						.then((selection) => {
-							if (selection === "Open Spotify Web Player") {
-								vscode.env.openExternal(
-									vscode.Uri.parse("https://open.spotify.com"),
-								);
-							}
-						});
+							.showInformationMessage(
+								"No active Spotify device found. Please open Spotify on one of your devices and try again.",
+								"Open Spotify Web Player",
+							)
+							.then((selection) => {
+								if (selection === "Open Spotify Web Player") {
+									vscode.env.openExternal(
+										vscode.Uri.parse("https://open.spotify.com"),
+									);
+								}
+							});
 					} else {
 						vscode.window.showErrorMessage(
 							`Failed to play playlist: ${error.message || error}`,
@@ -299,17 +299,17 @@ export function activate(context: vscode.ExtensionContext) {
 				} catch (error: any) {
 					if (error.message.includes("No active device found")) {
 						vscode.window
-						.showInformationMessage(
-							"No active Spotify device found. Open Spotify on one of your devices and try again.",
-							"Open Spotify Web Player"
-						)
-						.then((selection) => {
-							if (selection === "Open Spotify Web Player") {
-								vscode.env.openExternal(
-									vscode.Uri.parse("https://open.spotify.com"),
-								);
-							}
-						});
+							.showInformationMessage(
+								"No active Spotify device found. Open Spotify on one of your devices and try again.",
+								"Open Spotify Web Player",
+							)
+							.then((selection) => {
+								if (selection === "Open Spotify Web Player") {
+									vscode.env.openExternal(
+										vscode.Uri.parse("https://open.spotify.com"),
+									);
+								}
+							});
 					} else {
 						vscode.window.showErrorMessage(
 							`Failed to play artist's top tracks: ${error.message || error}`,
@@ -330,16 +330,16 @@ export function activate(context: vscode.ExtensionContext) {
 			} catch (error: any) {
 				if (error.message.includes("No active device found")) {
 					vscode.window
-					.showInformationMessage(
-						"No active Spotify device found. Open Spotify on one of your devices and try again.",
-					)
-					.then((selection) => {
-						if (selection === "Open Spotify Web Player") {
-							vscode.env.openExternal(
-								vscode.Uri.parse("https://open.spotify.com"),
-							);
-						}
-					});
+						.showInformationMessage(
+							"No active Spotify device found. Open Spotify on one of your devices and try again.",
+						)
+						.then((selection) => {
+							if (selection === "Open Spotify Web Player") {
+								vscode.env.openExternal(
+									vscode.Uri.parse("https://open.spotify.com"),
+								);
+							}
+						});
 				} else {
 					vscode.window.showErrorMessage(
 						`Failed to play album: ${error.message || error}`,
@@ -363,17 +363,17 @@ export function activate(context: vscode.ExtensionContext) {
 				} catch (error: any) {
 					if (error.message.includes("No active device found")) {
 						vscode.window
-						.showInformationMessage(
-							"No active Spotify device found. Open Spotify on one of your devices and try again.",
-							"Open Spotify Web Player"
-						)
-						.then((selection) => {
-							if (selection === "Open Spotify Web Player") {
-								vscode.env.openExternal(
-									vscode.Uri.parse("https://open.spotify.com"),
-								);
-							}
-						});
+							.showInformationMessage(
+								"No active Spotify device found. Open Spotify on one of your devices and try again.",
+								"Open Spotify Web Player",
+							)
+							.then((selection) => {
+								if (selection === "Open Spotify Web Player") {
+									vscode.env.openExternal(
+										vscode.Uri.parse("https://open.spotify.com"),
+									);
+								}
+							});
 					} else {
 						vscode.window.showErrorMessage(
 							`Failed to play track: ${error.message || error}`,
@@ -404,6 +404,12 @@ export function activate(context: vscode.ExtensionContext) {
 	);
 
 	context.subscriptions.push(
+		vscode.commands.registerCommand("xilie.refreshAll", () => {
+			updateUIStatus();
+		}),
+	);
+
+	context.subscriptions.push(
 		vscode.commands.registerCommand("xilie.refreshPlaylists", () => {
 			sidebarViews["playlists"].refresh();
 		}),
@@ -424,6 +430,318 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(
 		vscode.commands.registerCommand("xilie.refreshDevices", () => {
 			sidebarViews["devices"].refresh();
+		}),
+	);
+
+	context.subscriptions.push(
+		vscode.commands.registerCommand("xilie.quickSearch", () => {
+			let debounceTimer: NodeJS.Timeout | undefined;
+
+			const quickPick = vscode.window.createQuickPick();
+			quickPick.placeholder =
+				"Search for tracks, artists, and playlists. You can filter by artists:, playlists:, albums:, or tracks:";
+
+			quickPick.onDidChangeValue(async (value) => {
+				quickPick.items = [];
+				quickPick.busy = true;
+
+				if (debounceTimer) {
+					clearTimeout(debounceTimer);
+				}
+
+				debounceTimer = setTimeout(async () => {
+					if (!value) {
+						quickPick.busy = false;
+						return;
+					}
+
+					try {
+						const filterMatch = value
+							.trim()
+							.match(
+								/(artists|artist|playlists|playlist|albums|album|tracks|track):(.*)/i,
+							);
+						let query = value;
+						let searchTypes = "track,artist,playlist,album"; // Default search types
+
+						if (filterMatch) {
+							const filterType = filterMatch[1].toLowerCase();
+							const filterValue = filterMatch[2].trim();
+
+							switch (filterType) {
+								case "artists":
+								case "artist":
+									searchTypes = "artist";
+									break;
+								case "playlists":
+								case "playlist":
+									searchTypes = "playlist";
+									break;
+								case "tracks":
+								case "track":
+									searchTypes = "track";
+									break;
+								case "albums":
+								case "album":
+									searchTypes = "album";
+									break;
+								default:
+									searchTypes = "track,artist,playlist,album";
+							}
+							query = `${filterValue}`;
+						}
+
+						const results = await spotifyApi.search(query, searchTypes);
+						const allItems = [];
+
+						// Only process tracks if they were searched for and exist in results
+						if (
+							searchTypes.includes("track") &&
+							results.tracks &&
+							results.tracks?.items
+						) {
+							allItems.push(
+								...results.tracks.items
+									.filter((track: any) => track !== null)
+									.map((track: any) => ({
+										label: `${track.name}`,
+										description: `by ${track.artists.map((artist: any) => artist.name).join(", ")}`,
+										detail: "Track",
+										alwaysShow: true,
+										iconPath:
+											track.album.images[0] && track.album.images[0].url
+												? vscode.Uri.parse(track.album.images[0].url)
+												: new vscode.ThemeIcon("play"),
+										uri: track.uri,
+									})),
+							);
+						}
+
+						// Only process artists if they were searched for and exist in results
+						if (
+							searchTypes.includes("artist") &&
+							results.artists &&
+							results.artists?.items
+						) {
+							allItems.push(
+								...results.artists.items
+									.filter((artist: any) => artist !== null)
+									.map((artist: any) => ({
+										label: `${artist.name}`,
+										description: `followed by ${artist.followers.total.toLocaleString()}`,
+										detail: "Artist",
+										alwaysShow: true,
+										iconPath:
+											artist.images[0] && artist.images[0].url
+												? vscode.Uri.parse(artist.images[0].url)
+												: new vscode.ThemeIcon("person"),
+										uri: artist.uri,
+									})),
+							);
+						}
+
+						// Only process playlists if they were searched for and exist in results
+						if (
+							searchTypes.includes("playlist") &&
+							results.playlists &&
+							results.playlists?.items
+						) {
+							allItems.push(
+								...results.playlists.items
+									.filter((playlist: any) => playlist !== null)
+									.map((playlist: any) => ({
+										label: `${playlist.name}`,
+										description: `by ${playlist.owner.display_name}`,
+										detail: "Playlist",
+										alwaysShow: true,
+										iconPath:
+											playlist.images[0] && playlist.images[0].url
+												? vscode.Uri.parse(playlist.images[0].url)
+												: new vscode.ThemeIcon("folder-library"),
+										uri: playlist.uri,
+									})),
+							);
+						}
+
+						// Only process albums if they were searched for and exist in results
+						if (
+							searchTypes.includes("album") &&
+							results.albums &&
+							results.albums?.items
+						) {
+							allItems.push(
+								...results.albums.items
+									.filter((album: any) => album !== null)
+									.map((album: any) => ({
+										label: `${album.name}`,
+										description: `by ${album.artists.map((artist: any) => artist.name).join(", ")}`,
+										detail: "Album",
+										alwaysShow: true,
+										iconPath:
+											album.images[0] && album.images[0].url
+												? vscode.Uri.parse(album.images[0].url)
+												: new vscode.ThemeIcon("library"),
+										uri: album.uri,
+									})),
+							);
+						}
+
+						// If no items found, show a friendly message
+						if (allItems.length === 0) {
+							logger.info(`No results found for query: ${value}`);
+							quickPick.items = [
+								{
+									label: "No results found.",
+									alwaysShow: true,
+								},
+							];
+						} else {
+							quickPick.items = allItems;
+						}
+					} catch (error) {
+						logger.error(`Search error: ${error}`);
+						quickPick.items = [
+							{
+								label: "Error during search. Please try again.",
+								alwaysShow: true,
+							},
+						];
+					} finally {
+						quickPick.busy = false;
+					}
+				}, 500); // 500ms debounce
+			});
+
+			quickPick.onDidAccept(async () => {
+				const selectedItem: any = quickPick.selectedItems[0];
+				switch (selectedItem.detail) {
+					case "Track":
+						try {
+							await spotifyApi.startPlayback(undefined, undefined, [
+								selectedItem.uri,
+							]);
+							vscode.window.showInformationMessage(
+								`Playing track: ${selectedItem.label}`,
+							);
+							updatePlaybackStatusBar();
+							break;
+						} catch (error: any) {
+							if (error.message.includes("No active device found")) {
+								vscode.window
+									.showInformationMessage(
+										"No active Spotify device found. Open Spotify on one of your devices and try again.",
+										"Open Spotify Web Player",
+									)
+									.then((selection) => {
+										if (selection === "Open Spotify Web Player") {
+											vscode.env.openExternal(
+												vscode.Uri.parse("https://open.spotify.com"),
+											);
+										}
+									});
+							} else {
+								vscode.window.showErrorMessage(
+									`Failed to play track: ${error.message || error}`,
+								);
+							}
+							logger.error(`Play track error: ${error.message}`);
+						}
+					case "Artist":
+						try {
+							await spotifyApi.startPlayback(undefined, selectedItem.uri);
+							vscode.window.showInformationMessage(
+								`Playing top tracks for artist: ${selectedItem.label}`,
+							);
+							updatePlaybackStatusBar();
+							break;
+						} catch (error: any) {
+							if (error.message.includes("No active device found")) {
+								vscode.window
+									.showInformationMessage(
+										"No active Spotify device found. Open Spotify on one of your devices and try again.",
+										"Open Spotify Web Player",
+									)
+									.then((selection) => {
+										if (selection === "Open Spotify Web Player") {
+											vscode.env.openExternal(
+												vscode.Uri.parse("https://open.spotify.com"),
+											);
+										}
+									});
+							} else {
+								vscode.window.showErrorMessage(
+									`Failed to play artist's top tracks: ${error.message || error}`,
+								);
+							}
+							logger.error(`Play artist top tracks error: ${error}`);
+						}
+					case "Playlist":
+						try {
+							await spotifyApi.startPlayback(undefined, selectedItem.uri);
+							vscode.window.showInformationMessage(
+								`Playing playlist: ${selectedItem.label}`,
+							);
+							updatePlaybackStatusBar();
+							break;
+						} catch (error: any) {
+							if (error.message.includes("No active device found")) {
+								vscode.window
+									.showInformationMessage(
+										"No active Spotify device found. Please open Spotify on one of your devices and try again.",
+										"Open Spotify Web Player",
+									)
+									.then((selection) => {
+										if (selection === "Open Spotify Web Player") {
+											vscode.env.openExternal(
+												vscode.Uri.parse("https://open.spotify.com"),
+											);
+										}
+									});
+							} else {
+								vscode.window.showErrorMessage(
+									`Failed to play playlist: ${error.message || error}`,
+								);
+							}
+							logger.error(`Play playlist error: ${error}`);
+						}
+					case "Album":
+						try {
+							await spotifyApi.startPlayback(undefined, selectedItem.uri);
+							vscode.window.showInformationMessage(
+								`Playing album: ${selectedItem.label}`,
+							);
+							updatePlaybackStatusBar();
+							break;
+						} catch (error: any) {
+							if (error.message.includes("No active device found")) {
+								vscode.window
+									.showInformationMessage(
+										"No active Spotify device found. Open Spotify on one of your devices and try again.",
+									)
+									.then((selection) => {
+										if (selection === "Open Spotify Web Player") {
+											vscode.env.openExternal(
+												vscode.Uri.parse("https://open.spotify.com"),
+											);
+										}
+									});
+							} else {
+								vscode.window.showErrorMessage(
+									`Failed to play album: ${error.message || error}`,
+								);
+							}
+							logger.error(`Play album error: ${error}`);
+						}
+					default:
+						// Do nothing for non-actionable items
+						break;
+				}
+				quickPick.hide();
+			});
+
+			quickPick.onDidHide(() => quickPick.dispose());
+
+			quickPick.show();
 		}),
 	);
 

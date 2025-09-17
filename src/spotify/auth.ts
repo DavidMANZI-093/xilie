@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
 import crypto from "crypto";
+import { logger } from "../utils/logger";
 
 /**
  * Manages Spotify OAuth 2.0 Authorization Code flow with PKCE (Proof Key for Code Exchange).
@@ -114,9 +115,7 @@ export class SpotifyAuth {
 				} else {
 					// Fallback for other variants of VS Code that don't support URI handlers
 					try {
-						await vscode.env.openExternal(
-							vscode.Uri.parse(authUrl.toString()),
-						);
+						await vscode.env.openExternal(vscode.Uri.parse(authUrl.toString()));
 						vscode.window.showInformationMessage(
 							"Please authorize extension in your browser. After authorization, copy the authorization code and paste it here.",
 						);
@@ -249,6 +248,9 @@ export class SpotifyAuth {
 			[key: string]: any;
 		};
 
+		console.log("Token response:", tokenResponse);
+
+
 		// Store tokens securely
 		await this.secrets.store(
 			SpotifyAuth.ACCESS_TOKEN_KEY,
@@ -274,28 +276,30 @@ export class SpotifyAuth {
 		const expiryTime = expiryTimeStr ? parseInt(expiryTimeStr, 10) : 0;
 
 		// Check if token is missing or expired (with a small buffer)
-		if (!accessToken || Date.now() >= expiryTime - 60 * 1000) {
-			// Refresh 1 minute before actual expiry
+		if (!accessToken || Date.now() >= expiryTime - 5 * 60 * 1000) {
+			// Refresh 5 minute before actual expiry
 			if (!refreshToken) {
 				throw new Error("No refresh token available. Please re-authenticate.");
 			}
 
 			try {
-				console.log("Refreshing Spotify access token...");
+				logger.info("Refreshing Spotify access token...");
 				accessToken = await this.refreshAccessToken(refreshToken);
-				console.log("Successfully refreshed Spotify access token");
+				logger.info("Successfully refreshed Spotify access token");
 			} catch (error: any) {
-				console.error("Failed to refresh Spotify token:", error.message);
+				logger.error(`Failed to refresh Spotify token: ${error.message}`);
 
 				// Show user-friendly error message
-				vscode.window.showErrorMessage(
-					"Spotify session expired. Please re-authenticate.",
-					"Re-authenticate"
-				).then((selection) => {
-					if (selection === "Re-authenticate") {
-						vscode.commands.executeCommand("xilie.authenticate");
-					}
-				});
+				vscode.window
+					.showInformationMessage(
+						"Spotify session expired. Please re-authenticate.",
+						"Re-authenticate",
+					)
+					.then((selection) => {
+						if (selection === "Re-authenticate") {
+							vscode.commands.executeCommand("xilie.authenticate");
+						}
+					});
 
 				// Clear invalid tokens
 				await this.clearTokens();
@@ -378,13 +382,15 @@ export class SpotifyAuth {
 		}
 
 		// Store expiry time (current time + expires_in seconds)
-		const expiryTime = Date.now() + (tokenResponse.expires_in * 1000);
+		const expiryTime = Date.now() + tokenResponse.expires_in * 1000;
 		await this.secrets.store(
 			SpotifyAuth.TOKEN_EXPIRY_KEY,
 			expiryTime.toString(),
 		);
 
-		console.log(`Token refreshed successfully. Expires at: ${new Date(expiryTime).toISOString()}`);
+		console.log(
+			`Token refreshed successfully. Expires at: ${new Date(expiryTime).toISOString()}`,
+		);
 		return tokenResponse.access_token;
 	}
 

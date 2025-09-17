@@ -87,6 +87,10 @@ This extension contributes the following settings:
 
 ## Release Notes
 
+### 0.0.7
+
+Search & Discovery - Added comprehensive search functionality with smart filtering, album access, collective refresh capabilities, and Mac keyboard shortcuts support
+
 ### 0.0.6
 
 Major improvements - Added Recent Tracks view, enhanced session management, improved error handling, and better empty state UX

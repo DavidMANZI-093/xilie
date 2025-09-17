@@ -228,7 +228,9 @@ export class SpotifyApi {
 			}
 		} catch (error) {
 			// If pagination fails entirely, just return what we have
-			logger.warn("Pagination failed for playlist tracks, returning partial results");
+			logger.warn(
+				"Pagination failed for playlist tracks, returning partial results",
+			);
 		}
 
 		return res;
@@ -275,7 +277,9 @@ export class SpotifyApi {
 			}
 		} catch (error) {
 			// If pagination fails entirely, just return what we have
-			logger.warn("Pagination failed for followed artists, returning partial results");
+			logger.warn(
+				"Pagination failed for followed artists, returning partial results",
+			);
 		}
 
 		return res;
@@ -414,11 +418,15 @@ export class SpotifyApi {
 	 */
 	public async search(
 		query: string,
-		type: string = "track",
+		type: string = "track,artist,playlist",
 		limit: number = 20,
 		offset: number = 0,
 	): Promise<any> {
+		logger.debug(
+			`Searching for ${query} (type: ${type}, limit: ${limit}, offset: ${offset})`,
+		);
 		const encodedQuery = encodeURIComponent(query);
+		logger.debug(`Encoded query: ${encodedQuery}`);
 		return this._fetch(
 			`/search?q=${encodedQuery}&type=${type}&limit=${limit}&offset=${offset}`,
 		);
