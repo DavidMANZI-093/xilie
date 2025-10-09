@@ -248,9 +248,6 @@ export class SpotifyAuth {
 			[key: string]: any;
 		};
 
-		console.log("Token response:", tokenResponse);
-
-
 		// Store tokens securely
 		await this.secrets.store(
 			SpotifyAuth.ACCESS_TOKEN_KEY,

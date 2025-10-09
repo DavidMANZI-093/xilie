@@ -3,7 +3,7 @@
   "displayName": "Xilie",
   "description": "A VS Code extension that provides seamless Spotify control directly from your IDE. Play, pause, skip tracks, manage playlists, and control volume without leaving your development environment.",
   "publisher": "d3fault",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "icon": "icons/xilie-icon.png",
   "repository": {
     "type": "git",

@@ -60,7 +60,11 @@ export class SpotifyApi {
 
 				if (response.status === 401) {
 					// Unauthorized - token might have become invalid
-					await this.spotifyAuth.clearTokens();
+					if (i === 0) {
+						logger.info("Access token expired, attempting refresh...");
+						await this.spotifyAuth.getAccessToken();
+						continue;
+					}
 					throw new Error(
 						"Unauthorized Spotify API request. Re-authentication needed.",
 					);

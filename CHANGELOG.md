@@ -2,6 +2,18 @@
 
 All notable changes to the "xilie" extension will be documented in this file.
 
+## [0.0.8] - 2025-10-09
+
+### Fixed
+- **Critical Session Management Bug**: Fixed token refresh mechanism that was incorrectly clearing refresh tokens on 401 errors
+- **Long-lived Sessions**: Restored seamless authentication experience by properly handling access token expiration
+- **Token Refresh Logic**: API layer now attempts token refresh before requiring full re-authentication
+
+### Technical
+- Replaced aggressive token clearing on 401 responses with proper retry logic
+- Enhanced 401 error handling to leverage existing refresh token mechanism
+- Improved authentication flow reliability for extended usage sessions
+
 ## [0.0.7] - 2025-09-17
 
 ### Added
